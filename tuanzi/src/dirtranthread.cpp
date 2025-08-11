@@ -152,7 +152,7 @@ void CDirTranThread::CloseGSNSender(int id)
 }
 
 bool CDirTranThread::DecryptPrivateData(
-    const struct tagDirectCom_ProtocalParam &proto_param,
+    const struct tagDirectCom_ProtocalParam& proto_param,
     char *buf,
     unsigned buflen
 ) const
@@ -203,8 +203,8 @@ bool CDirTranThread::DirTranThreadInit()
 }
 
 bool CDirTranThread::DoSendPacket(
-    struct tagSenderBind &sender_bind,
-    const struct tagDataSendUnit &send_unit
+    struct tagSenderBind& sender_bind,
+    const struct tagDataSendUnit& send_unit
 )
 {
     struct ether_addr special_mac_all_zero =
@@ -436,7 +436,7 @@ bool CDirTranThread::DoSendPacket(
 }
 
 bool CDirTranThread::EncryptPrivateData(
-    const struct tagDirectCom_ProtocalParam &proto_param,
+    const struct tagDirectCom_ProtocalParam& proto_param,
     char *buf,
     unsigned buflen
 ) const
@@ -491,14 +491,14 @@ int CDirTranThread::GSNSender(
 }
 
 bool CDirTranThread::GetProtocalParam(
-    struct tagDirectCom_ProtocalParam &proto_param,
+    struct tagDirectCom_ProtocalParam& proto_param,
     in_addr_t addr,
     unsigned short port
 )
 {
     EnterCriticalSection(&get_set_proto_param_mutex);
 
-    for (const struct tagDirectCom_ProtocalParam &proto_param_l : proto_params) {
+    for (const struct tagDirectCom_ProtocalParam& proto_param_l : proto_params) {
         if (proto_param_l.addr != addr || proto_param_l.port != port)
             continue;
 
@@ -513,13 +513,13 @@ bool CDirTranThread::GetProtocalParam(
 }
 
 bool CDirTranThread::GetProtocalParamFromSenderHand(
-    struct tagDirectCom_ProtocalParam &proto_param,
+    struct tagDirectCom_ProtocalParam& proto_param,
     int id
 )
 {
     EnterCriticalSection(&send_bind_mutex);
 
-    for (const struct tagSenderBind &sender_bind : send_bind) {
+    for (const struct tagSenderBind& sender_bind : send_bind) {
         if (sender_bind.id != id)
             continue;
 
@@ -607,7 +607,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(OnTransPacket, CDirTranThread)
         if (DoSendPacket(sender_bind, send_unit)) {
             EnterCriticalSection(&send_bind_mutex);
 
-            for (struct tagSenderBind &sender_bind_l : send_bind)
+            for (struct tagSenderBind& sender_bind_l : send_bind)
                 if (sender_bind_l.id == send_unit.id)
                     sender_bind_l.on_receive_packet_post_mtype =
                         sender_bind.on_receive_packet_post_mtype;
@@ -826,13 +826,13 @@ bool CDirTranThread::SendPacketNoResponse(
 }
 
 bool CDirTranThread::SetDirParaXieYi(
-    const struct tagDirectCom_ProtocalParam &proto_param
+    const struct tagDirectCom_ProtocalParam& proto_param
 )
 {
     bool found = false;
     EnterCriticalSection(&get_set_proto_param_mutex);
 
-    for (struct tagDirectCom_ProtocalParam &proto_param_l : proto_params) {
+    for (struct tagDirectCom_ProtocalParam& proto_param_l : proto_params) {
         if (
             // the original implementation checks if proto_param
             // is the same as proto_param_l, but we do not check for that
@@ -869,7 +869,7 @@ bool CDirTranThread::SetProtocalParam_TimeStamp(
     bool found = false;
     EnterCriticalSection(&get_set_proto_param_mutex);
 
-    for (struct tagDirectCom_ProtocalParam &proto_param : proto_params) {
+    for (struct tagDirectCom_ProtocalParam& proto_param : proto_params) {
         if (proto_param.addr != addr || proto_param.port != port)
             continue;
 
@@ -903,7 +903,7 @@ bool CDirTranThread::SetReTranPara(
     bool found = false;
     EnterCriticalSection(&get_set_proto_param_mutex);
 
-    for (struct tagDirectCom_ProtocalParam &proto_param : proto_params) {
+    for (struct tagDirectCom_ProtocalParam& proto_param : proto_params) {
         if (proto_param.addr != addr || proto_param.port != port)
             continue;
 
@@ -940,7 +940,7 @@ void CDirTranThread::StopRun()
     CloseAllGSNSender();
 }
 
-bool CDirTranThread::WaitUDP_DirectThread_OK(WAIT_HANDLE &event_udp_ready) const
+bool CDirTranThread::WaitUDP_DirectThread_OK(WAIT_HANDLE& event_udp_ready) const
 {
     int wait_return = 0;
     assert(udp_listenthread);

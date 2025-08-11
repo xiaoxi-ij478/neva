@@ -51,7 +51,7 @@ bool CSuConfigFile::Open()
     return Open(cfg_filename.c_str());
 }
 
-void CSuConfigFile::AppendComma(std::string &str)
+void CSuConfigFile::AppendComma(std::string& str)
 {
     unsigned long slen = str.length();
     const char *sym = nullptr;
@@ -71,7 +71,7 @@ void CSuConfigFile::AppendComma(std::string &str)
     str.insert(0, sym).append(sym);
 }
 
-void CSuConfigFile::DeleteFile(const std::string &filename)
+void CSuConfigFile::DeleteFile(const std::string& filename)
 {
     // the original implementation used shell
     // "rm -rf $filename"
@@ -122,7 +122,7 @@ void CSuConfigFile::GetPrivateProfileString(
     const char *domain,
     const char *key,
     const char *defval,
-    std::string &dst
+    std::string& dst
 )
 {
     dictionary *ini = nullptr;
@@ -144,8 +144,8 @@ void CSuConfigFile::GetPrivateProfileString(
 }
 
 void CSuConfigFile::GetSysUPTime(
-    [[maybe_unused]] unsigned &highDataTime,
-    [[maybe_unused]] unsigned &lowDataTime
+    [[maybe_unused]] unsigned& highDataTime,
+    [[maybe_unused]] unsigned& lowDataTime
 )
 {}
 
@@ -206,17 +206,17 @@ bool CSuConfigFile::Open(const char *rfilename)
     return true;
 }
 
-static void ConvertEnternewlineToOnetwo(std::string &str)
+static void ConvertEnternewlineToOnetwo(std::string& str)
 {
     replace_all_distinct(str, "\x01\x02", "\r\n");
 }
 
-void CSuConfigFile::ProfileStringToString(std::string &str)
+void CSuConfigFile::ProfileStringToString(std::string& str)
 {
     replace_all_distinct(str, "\x01\x02", "\r\n");
 }
 
-void CSuConfigFile::StringToProfileString(std::string &str)
+void CSuConfigFile::StringToProfileString(std::string& str)
 {
     ConvertEnternewlineToOnetwo(str);
     AppendComma(str);

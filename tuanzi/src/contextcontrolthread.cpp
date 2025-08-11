@@ -95,9 +95,6 @@ CContextControlThread::CContextControlThread() :
     SetClassName("CContextControlThread");
 }
 
-CContextControlThread::~CContextControlThread()
-{}
-
 bool CContextControlThread::InitInstance()
 {
     char diskid_buf[64] = {};
@@ -152,7 +149,7 @@ bool CContextControlThread::InitInstance()
     memset(
         private_properties.encrypt_key,
         0,
-        sizeof(private_properties.encrypt_iv)
+        sizeof(private_properties.encrypt_key)
     );
     memset(
         private_properties.encrypt_iv,
@@ -255,10 +252,11 @@ unsigned CContextControlThread::Authenticate_InitAll()
 //        platform_param.event_callback = supf_event_callback_fun;
         platform_param.debug_file =
 #ifdef NDEBUG
-            nullptr;
+            nullptr
 #else
-            debug_file;
+            debug_file
 #endif // NDEBUG
+            ;
         rj_printf_debug("Authenticate_InitAll before su_platform_init \n");
         su_plat_init_ret = su_platform_init(&platform_param);
         rj_printf_debug("Authenticate_InitAll after su_platform_init - END\n");
@@ -462,26 +460,23 @@ void CContextControlThread::DeAuthenticate_ExitAll()
 
     if (read_packet_thread) {
         read_packet_thread->SetProxyMsgID(-1);
+        g_log_Wireless.AppendText(
+            "CContextControlThread::DeAuthenticate_ExitAll StopRxPacketThread "
+        );
 
-        if (read_packet_thread) {
+        if (read_packet_thread->StopRxPacketThread() == ETIMEDOUT) {
             g_log_Wireless.AppendText(
-                "CContextControlThread::DeAuthenticate_ExitAll StopRxPacketThread "
+                "CContextControlThread::DeAuthenticate_ExitAll TerminateThread "
+                "m_readPacketThread->m_nThreadID=%x",
+                read_packet_thread->thread_id
             );
 
-            if (read_packet_thread->StopRxPacketThread() == ETIMEDOUT) {
-                g_log_Wireless.AppendText(
-                    "CContextControlThread::DeAuthenticate_ExitAll TerminateThread "
-                    "m_readPacketThread->m_nThreadID=%x",
-                    read_packet_thread->thread_id
-                );
+            if (!TerminateThread(read_packet_thread->thread_id)) {
+                delete read_packet_thread;
+                read_packet_thread = nullptr;
 
-                if (!TerminateThread(read_packet_thread->thread_id)) {
-                    delete read_packet_thread;
-                    read_packet_thread = nullptr;
-
-                } else
-                    g_log_Wireless.AppendText("TerminateThread read packet thread failed.");
-            }
+            } else
+                g_log_Wireless.AppendText("TerminateThread read packet thread failed.");
         }
     }
 
@@ -818,7 +813,7 @@ int CContextControlThread::EnvironmentCheck()
         std::string(tmpbuf2).append(CChangeLanguage::Instance().LoadString(264))
     );
 
-    for (struct NICsStatus &nic_status : nic_statuses) {
+    for (struct NICsStatus& nic_status : nic_statuses) {
         if (!nic_status.is_up)
             continue;
 
@@ -909,7 +904,7 @@ unsigned CContextControlThread::GetDHCPAuthStep()
     return dhcp_auth_step;
 }
 
-void CContextControlThread::GetDHCPInfoParam(struct DHCPIPInfo &dst) const
+void CContextControlThread::GetDHCPInfoParam(struct DHCPIPInfo& dst) const
 {
     dst = configure_info.dhcp_ipinfo;
 }
@@ -986,7 +981,7 @@ bool CContextControlThread::IS_WLAN(enum EAP_TYPES type) const
 }
 
 void CContextControlThread::InitAll_Success(
-    const struct SuRadiusPrivate &private_prop
+    const struct SuRadiusPrivate& private_prop
 )
 {
     char errbuf[512] = {};
@@ -1254,7 +1249,7 @@ bool CContextControlThread::IsRuijieNas() const
 }
 
 bool CContextControlThread::IsServerlistUpdate(
-    const std::vector<std::string> &new_list
+    const std::vector<std::string>& new_list
 ) const
 {
     return
@@ -1962,7 +1957,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(
     UNUSED_VAR(arg2);
     static std::string strLogFile = g_strAppPath + "log/run.log";
     static enum STATES last_state = STATE_DISASSOC;
-    CBackoffReAuthenticationManager &boram_instance =
+    CBackoffReAuthenticationManager& boram_instance =
         CBackoffReAuthenticationManager::Instance();
     char tmpbuf[64] = {};
     std::string timestr;
@@ -2031,7 +2026,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(
 
         case STATE_AUTHENTICATED:
             g_log_Wireless.AppendText("\t 认证完成");
-            CBackoffReAuthenticationManager::Instance().reauth_count = 0;
+            boram_instance.reauth_count = 0;
 
             if (
                 IS_WIRED(EAP_TYPE_INVALID) &&
@@ -2375,7 +2370,7 @@ void CContextControlThread::OnShowLoginURL() const
     show_login_url();
 }
 
-bool CContextControlThread::RefreshSignal(const std::string &adapter_name)
+bool CContextControlThread::RefreshSignal(const std::string& adapter_name)
 {
     static std::string strLastAdapter;
     unsigned su_plat_init_ret = 0;
@@ -2411,10 +2406,11 @@ bool CContextControlThread::RefreshSignal(const std::string &adapter_name)
 //        platform_param.event_callback = supf_event_callback_fun;
         platform_param.debug_file =
 #ifdef NDEBUG
-            nullptr;
+            nullptr
 #else
-            debug_file;
+            debug_file
 #endif // NDEBUG
+            ;
         rj_printf_debug(" before su_platform_init \n");
         su_plat_init_ret = su_platform_init(&platform_param);
         rj_printf_debug(" after su_platform_init \n");
@@ -2937,7 +2933,7 @@ bool CContextControlThread::StartAdapterStateCheck() const
 }
 
 void CContextControlThread::StartDirectTrans(
-    const struct SuRadiusPrivate &private_prop,
+    const struct SuRadiusPrivate& private_prop,
     bool wait,
     bool request_init_data_now
 )
@@ -3100,7 +3096,7 @@ void CContextControlThread::StartDirectTrans(
 }
 
 void CContextControlThread::StartProcessBusiness(
-    const struct SuRadiusPrivate &private_prop
+    const struct SuRadiusPrivate& private_prop
 )
 {
     process_business_started = true;
@@ -3297,7 +3293,7 @@ void CContextControlThread::StopAuthentication(
 }
 
 void CContextControlThread::SuccessNotification(
-    const std::string &notif_str
+    const std::string& notif_str
 ) const
 {
     if (notif_str.empty())
@@ -3386,7 +3382,7 @@ void CContextControlThread::WlanScanComplete(
             scan_result->res[i].qual
         );
 
-        for (struct tagWirelessSignal &signal : wireless_signal) {
+        for (struct tagWirelessSignal& signal : wireless_signal) {
             if (
                 signal.ssid_len == scan_result->res[i].ssid_len &&
                 !memcmp(signal.ssid, scan_result->res[i].ssid, signal.ssid_len)
