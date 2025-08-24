@@ -24,7 +24,7 @@ void CreateNewMsgFile()
     ofs.close();
 }
 
-void AddMsgItem(unsigned type, const std::string& msg)
+void AddMsgItem(unsigned type, const std::string &msg)
 {
     if (msg.empty())
         return;
@@ -88,7 +88,7 @@ void AddMsgItem(unsigned type, const std::string& msg)
     LeaveCriticalSection(&msg_write_lock);
 }
 
-void DelMsgItem(unsigned type, const std::string& msg)
+void DelMsgItem(unsigned type, const std::string &msg)
 {
     if (msg.empty())
         return;
@@ -148,13 +148,13 @@ void DelMsgItem(unsigned type, const std::string& msg)
     LeaveCriticalSection(&msg_write_lock);
 }
 
-unsigned GetMsgArray(std::vector<struct tagMsgItem>& msgarr)
+unsigned GetMsgArray(std::vector<struct tagMsgItem> &msgarr)
 {
     return GetMsgArray_Ex(msgarr, true);
 }
 
 unsigned GetMsgArray_Ex(
-    std::vector<struct tagMsgItem>& msgarr,
+    std::vector<struct tagMsgItem> &msgarr,
     bool replace_crlf
 )
 {
@@ -199,7 +199,7 @@ unsigned GetMsgArray_Ex(
     return 0;
 }
 
-const std::string& GetMessageType(unsigned type)
+const std::string &GetMessageType(unsigned type)
 {
     static std::string none;
 
@@ -218,7 +218,7 @@ const std::string& GetMessageType(unsigned type)
     }
 }
 
-void print_msg_item(const struct tagMsgItem& item)
+void print_msg_item(const struct tagMsgItem &item)
 {
     std::string s(item.msg);
     s.append("\t").append(GetMessageType(item.ntype));
@@ -234,7 +234,7 @@ void print_msg_item_header()
               << std::endl;
 }
 
-void ShowLocalMsg(const std::string& content, const std::string& header)
+void ShowLocalMsg(const std::string &content, const std::string &header)
 {
     char cur_date[64] = {};
     GetCurDataAndTime(cur_date);

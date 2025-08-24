@@ -9,7 +9,7 @@ class CHttpConnection
 
         void addRequestHeader(const char *header);
         int getErrorCode() const;
-        const std::string& getErrorText() const;
+        const std::string &getErrorText() const;
         int getLength() const;
         void setTimeout(int timeout);
         void httpClose();
@@ -21,9 +21,9 @@ class CHttpConnection
         int makeSocket(const char *addr, unsigned short port);
         bool parseUrl(
             const char *url,
-            std::string& domain,
-            int& port,
-            std::string& path
+            std::string &domain,
+            int &port,
+            std::string &path
         );
         [[gnu::fd_arg_read(2)]]
         bool readHttpHeader(int fd);

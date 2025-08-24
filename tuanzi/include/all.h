@@ -4,17 +4,21 @@
 #include <algorithm>
 #include <atomic>
 #include <chrono>
+#include <condition_variable>
 #include <fstream>
 #include <functional>
 #include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <limits>
+#include <memory>
 #include <mutex>
 #include <numeric>
+#include <queue>
 #include <sstream>
 #include <string>
 #include <thread>
+#include <typeinfo>
 #include <type_traits>
 #include <unordered_map>
 #include <utility>
@@ -43,7 +47,6 @@
 #include <ifaddrs.h>
 #include <netdb.h>
 #include <pthread.h>
-#include <semaphore.h>
 #include <strings.h>
 #include <termios.h>
 #include <unistd.h>
@@ -62,6 +65,7 @@
 #include <net/route.h>
 #include <scsi/scsi.h>
 #include <scsi/sg.h>
+#include <sys/file.h>
 #include <sys/ioctl.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
