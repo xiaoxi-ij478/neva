@@ -1244,7 +1244,7 @@ bool GetDHCPIPInfo(struct DHCPIPInfo &info, bool)
     info.gateway = htonl(nic_info->gateway);
     info.gateway_mac = nic_info->gateway_mac;
 
-    if (nic_info->ipaddrs->ipaddr) {
+    if (nic_info->ipaddrs && nic_info->ipaddrs->ipaddr) {
         info.ip4_ipaddr = nic_info->ipaddrs->ipaddr;
         info.ip4_netmask = nic_info->ipaddrs->netmask;
     }

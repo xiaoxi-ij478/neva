@@ -16,9 +16,10 @@ struct eapolpkg *ChangeToUChar(
 {
     CRGPrivateProc priproc;
     unsigned priproc_len = 0;
-    unsigned len = 0;
+    unsigned len = offsetof(struct eapolpkg, eap_packet);
     struct eapolpkg *ret =
             reinterpret_cast<struct eapolpkg *>(new char[1400]);
+    *length = 0;
 
     if (CtrlThread->IsRuijieNas())
         *reinterpret_cast<struct ether_addr *>(ret->etherheader.ether_dhost) =

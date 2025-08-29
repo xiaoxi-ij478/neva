@@ -14,7 +14,7 @@ class CSuConfigFile
             const char *domain,
             const char *key,
             const char *val
-        ) const;
+        );
 
         static void Lock();
         static void Unlock();

@@ -65,19 +65,20 @@ void CStateConnecting::MoveState()
     if (state_data->req_id && CtrlThread->machine_thread)
         CtrlThread->machine_thread->OnStateMove(STATE_ACQUIRED, 0);
 
-    else if (
-        !state_data->connect_timeout &&
-        state_data->auth_attempt_count <
-        CtrlThread->configure_info.authparam_startnumber &&
-        CtrlThread->machine_thread
-    )
-        CtrlThread->machine_thread->OnStateMove(STATE_CONNECTING, 0);
+    else if (!state_data->connect_timeout) {
+        if (
+            state_data->auth_attempt_count <
+            CtrlThread->configure_info.authparam_startnumber &&
+            CtrlThread->machine_thread
+        )
+            CtrlThread->machine_thread->OnStateMove(STATE_CONNECTING, 0);
 
-    else {
-        CtrlThread->reconnect_fail = true;
+        else {
+            CtrlThread->reconnect_fail = true;
 
-        if (CtrlThread->machine_thread)
-            CtrlThread->machine_thread->OnStateMove(STATE_AUTHENTICATED, 0);
+            if (CtrlThread->machine_thread)
+                CtrlThread->machine_thread->OnStateMove(STATE_AUTHENTICATED, 0);
+        }
     }
 }
 

@@ -183,8 +183,8 @@ bool CSuConfigFile::Open(const char *rfilename)
     ibuf = new char[orig_size];
     ifs.read(ibuf, orig_size);
     ifs.close();
-    std::for_each(ibuf, ibuf + orig_size, [](char &i) {
-        i = ~i;
+    std::transform(ibuf, ibuf + orig_size, ibuf, [](char i) {
+        return ~i;
     });
     decompress_size = Decompress(ibuf, obuf, orig_size, 0);
     obuf = new char[decompress_size];
@@ -253,14 +253,15 @@ bool CSuConfigFile::UpdateConfig()
     comp_size = Compress(ibuf, obuf, orig_size, 0);
     obuf = new char[comp_size];
     Compress(ibuf, obuf, orig_size, comp_size);
-    std::for_each(obuf, obuf + comp_size, [](char &i) {
-        i = ~i;
+    std::transform(obuf, obuf + comp_size, obuf, [](char i) {
+        return ~i;
     });
 
     if (!ofs.write(obuf, comp_size)) {
         g_logSystem.AppendText("ERROR: write file %s failed.\n", cfg_filename.c_str());
+        delete[] ibuf;
         delete[] obuf;
-        obuf = nullptr;
+        ibuf = obuf = nullptr;
         return false;
     }
 
@@ -276,33 +277,35 @@ bool CSuConfigFile::WritePrivateProfileString(
     const char *domain,
     const char *key,
     const char *val
-) const
+)
 {
     assert(is_open);
-    dictionary *ini = nullptr;
     std::string cfgpath;
-    std::string dkey(domain);
-    std::string tmpval(val);
-    FILE *fp = nullptr;
-    dkey.append(":").append(key);
     TakeAppPath(cfgpath);
     cfgpath.append("SuTempConfig.dat");
+    dictionary *ini;
 
     if (!(ini = iniparser_load(cfgpath.c_str()))) {
         g_logSystem.AppendText("ini create[path=%s]failed", cfgpath.c_str());
         return false;
     }
 
+    std::string dkey(domain);
+    std::string tmpval(val);
     StringToProfileString(tmpval);
+    dkey.append(":").append(key);
 
     if (iniparser_set(ini, dkey.c_str(), tmpval.c_str()) == -1)
         return false;
+
+    FILE *fp;
 
     if ((fp = fopen(cfgpath.c_str(), "w"))) {
         iniparser_dump_ini(ini, fp);
         fclose(fp);
     }
 
+    config_dirty = true;
     iniparser_freedict(ini);
     return true;
 }

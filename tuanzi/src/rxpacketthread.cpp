@@ -212,7 +212,7 @@ void CRxPacketThread::RecvPacketCallBack(
     if (h->caplen < sizeof(struct ether_header))
         return;
 
-    alloc_size = std::max(h->caplen, 1999u);
+    alloc_size = std::min(h->caplen, 1999u);
     pkg = reinterpret_cast<struct etherudppkg *>
           (pkg_char = new char[alloc_size]);
     memcpy(pkg, bytes, alloc_size);
@@ -228,7 +228,7 @@ void CRxPacketThread::RecvPacketCallBack(
             if (
                 !GPostThreadMessage(
                     msgids->main_msgid,
-                    RECV_PAE_PACKET_MTYPE,
+                    PACKET_RETURN_MTYPE,
                     alloc_size,
                     reinterpret_cast<unsigned long>(pkg)
                 )

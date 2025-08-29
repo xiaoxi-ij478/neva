@@ -26,20 +26,18 @@ void CreateNewMsgFile()
 
 void AddMsgItem(unsigned type, const std::string &msg)
 {
-    std::string msgcopy = msg;
-    std::string inifile = g_strAppPath + "systemmsg.ini";
-    std::vector<struct tagMsgItem> msgarr;
-    dictionary *ini = nullptr;
-    char time[512] = {};
-
     if (msg.empty())
         return;
 
     EnterCriticalSection(&msg_write_lock);
+    std::string msgcopy = msg;
     replace_all_distinct(msgcopy, "\n", "\r\n");
     replace_all_distinct(msgcopy, "{$\\r\\n$}", "\n");
+    std::vector<struct tagMsgItem> msgarr;
     GetMsgArray_Ex(msgarr, false);
     CreateNewMsgFile();
+    std::string inifile = g_strAppPath + "systemmsg.ini";
+    dictionary *ini;
 
     if (!(ini = iniparser_load(inifile.c_str()))) {
         LeaveCriticalSection(&msg_write_lock);
@@ -52,11 +50,13 @@ void AddMsgItem(unsigned type, const std::string &msg)
             break;
         }
 
+    char time[512] = {};
     GetCurDataAndTime(time);
     msgarr.emplace_back(type, time, msg);
 
     for (unsigned i = 0; i < msgarr.size(); i++) {
         std::string inikey = "msg_" + std::to_string(i);
+        iniparser_set(ini, inikey.c_str(), nullptr);
         iniparser_set(
             ini,
             (inikey + ":ntype").c_str(),
@@ -75,24 +75,33 @@ void AddMsgItem(unsigned type, const std::string &msg)
     }
 
     iniparser_set(ini, "system:nmsg", std::to_string(msgarr.size()).c_str());
+    FILE *fp = fopen(inifile.c_str(), "w");
+
+    if (!fp) {
+        LeaveCriticalSection(&msg_write_lock);
+        return;
+    }
+
+    iniparser_dump_ini(ini, fp);
+    fclose(fp);
+    iniparser_freedict(ini);
     LeaveCriticalSection(&msg_write_lock);
 }
 
 void DelMsgItem(unsigned type, const std::string &msg)
 {
-    std::string msgcopy = msg;
-    std::string inifile = g_strAppPath + "systemmsg.ini";
-    std::vector<struct tagMsgItem> msgarr;
-    dictionary *ini = nullptr;
-
     if (msg.empty())
         return;
 
     EnterCriticalSection(&msg_write_lock);
+    std::string msgcopy = msg;
     replace_all_distinct(msgcopy, "\n", "\r\n");
     replace_all_distinct(msgcopy, "{$\\r\\n$}", "\n");
+    std::vector<struct tagMsgItem> msgarr;
     GetMsgArray_Ex(msgarr, false);
     CreateNewMsgFile();
+    std::string inifile = g_strAppPath + "systemmsg.ini";
+    dictionary *ini;
 
     if (!(ini = iniparser_load(inifile.c_str()))) {
         LeaveCriticalSection(&msg_write_lock);
@@ -107,6 +116,7 @@ void DelMsgItem(unsigned type, const std::string &msg)
 
     for (unsigned i = 0; i < msgarr.size(); i++) {
         std::string inikey = "msg_" + std::to_string(i);
+        iniparser_set(ini, inikey.c_str(), nullptr);
         iniparser_set(
             ini,
             (inikey + ":ntype").c_str(),
@@ -125,6 +135,16 @@ void DelMsgItem(unsigned type, const std::string &msg)
     }
 
     iniparser_set(ini, "system:nmsg", std::to_string(msgarr.size()).c_str());
+    FILE *fp = fopen(inifile.c_str(), "w");
+
+    if (!fp) {
+        LeaveCriticalSection(&msg_write_lock);
+        return;
+    }
+
+    iniparser_dump_ini(ini, fp);
+    fclose(fp);
+    iniparser_freedict(ini);
     LeaveCriticalSection(&msg_write_lock);
 }
 
@@ -175,6 +195,7 @@ unsigned GetMsgArray_Ex(
     }
 
     CreateNewMsgFile();
+    iniparser_freedict(ini);
     return 0;
 }
 

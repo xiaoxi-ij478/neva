@@ -103,12 +103,11 @@ bool CContextControlThread::InitInstance()
     char diskid_buf[64] = {};
     unsigned i = 0;
 
-    if (!CUserConfig::ReadSupplicantConf()) {
+    if (!CUserConfig::ReadSupplicantConf())
         ShowLocalMsg(
             CChangeLanguage::Instance().LoadString(2),
             CChangeLanguage::Instance().LoadString(246)
         );
-    }
 
     if (getdiskid(diskid_buf, sizeof(diskid_buf))) {
         logFile.AppendText("get disk serial error");
@@ -186,11 +185,11 @@ bool CContextControlThread::ExitInstance()
 {
     g_log_Wireless.AppendText("Enter CContextControlThread::ExitInstance");
     ExitExtance_ExitAll();
-    adapter_detect_thread->SafeExitThread(10000);
-    adapter_detect_thread = nullptr;
-    g_log_Wireless.AppendText("CContextControlThread::ExitInstance adapte detect stop");
-    proxy_detect_thread->SafeExitThread(10000);
-    proxy_detect_thread = nullptr;
+//    adapter_detect_thread->SafeExitThread(10000);
+//    adapter_detect_thread = nullptr;
+//    g_log_Wireless.AppendText("CContextControlThread::ExitInstance adapte detect stop");
+//    proxy_detect_thread->SafeExitThread(10000);
+//    proxy_detect_thread = nullptr;
     CClientCenterPeerManager::Stop();
     SetEvent(&scan_completed, true);
     CloseHandle(&scan_completed);
@@ -515,11 +514,11 @@ void CContextControlThread::DeinitAll_Success()
 {
     g_log_Wireless.AppendText("DeinitAll_Success ENTER");
 
-    if (adapter_detect_thread)
-        adapter_detect_thread->StopDetect(1);
-
-    if (proxy_detect_thread)
-        proxy_detect_thread->StopDetect();
+//    if (adapter_detect_thread)
+//        adapter_detect_thread->StopDetect(1);
+//
+//    if (proxy_detect_thread)
+//        proxy_detect_thread->StopDetect();
 
     KillDirectSrv();
 
@@ -1027,44 +1026,44 @@ void CContextControlThread::InitAll_Success(
     );
     StartDirectTrans(private_prop, false, true);
 
-    if (private_prop.proxy_avoid) {
-        g_log_Wireless.AppendText(
-            "Start Proxy Detect,type=%08x",
-            private_prop.proxy_dectect_kinds
-        );
-        disallow_multi_nic_ip = ((private_prop.proxy_dectect_kinds ? : -1) >> 4) & 1;
-
-        if (
-            proxy_detect_thread->StartDetect(
-                configure_info.public_adapter.c_str(),
-                thread_id,
-                RECEIVED_PROXY_DETECT_RESULT_MTYPE,
-                private_prop.proxy_dectect_kinds ? : -1,
-                errbuf
-            )
-        )
-            read_packet_thread->SetProxyMsgID(
-                proxy_detect_thread->GetMessageID()
-            );
-
-        else
-            g_log_Wireless.AppendText("Start Proxy Detect err:%s", errbuf);
-    }
+//    if (private_prop.proxy_avoid) {
+//        g_log_Wireless.AppendText(
+//            "Start Proxy Detect,type=%08x",
+//            private_prop.proxy_dectect_kinds
+//        );
+//        disallow_multi_nic_ip = ((private_prop.proxy_dectect_kinds ? : -1) >> 4) & 1;
+//
+//        if (
+//            proxy_detect_thread->StartDetect(
+//                configure_info.public_adapter.c_str(),
+//                thread_id,
+//                RECEIVED_PROXY_DETECT_RESULT_MTYPE,
+//                private_prop.proxy_dectect_kinds ? : -1,
+//                errbuf
+//            )
+//        )
+//            read_packet_thread->SetProxyMsgID(
+//                proxy_detect_thread->GetMessageID()
+//            );
+//
+//        else
+//            g_log_Wireless.AppendText("Start Proxy Detect err:%s", errbuf);
+//    }
 
     GetAdapterMac(&macaddr);
 
-    if (
-        !adapter_detect_thread->StartDetect(
-            configure_info.public_adapter.c_str(),
-            &macaddr,
-            configure_info.dhcp_ipinfo.ip4_ipaddr,
-            thread_id,
-            ADAPTER_STATE_MTYPE,
-            disallow_multi_nic_ip,
-            errbuf
-        )
-    )
-        g_log_Wireless.AppendText("Adapter Start Detect err:%s", errbuf);
+//    if (
+//        !adapter_detect_thread->StartDetect(
+//            configure_info.public_adapter.c_str(),
+//            &macaddr,
+//            configure_info.dhcp_ipinfo.ip4_ipaddr,
+//            thread_id,
+//            ADAPTER_STATE_MTYPE,
+//            disallow_multi_nic_ip,
+//            errbuf
+//        )
+//    )
+//        g_log_Wireless.AppendText("Adapter Start Detect err:%s", errbuf);
 }
 
 void CContextControlThread::InitCheckSelf() const
@@ -1108,31 +1107,31 @@ bool CContextControlThread::InitInstance_InitAll()
             return false;
         }
     }
-
-    adapter_detect_thread = new CAdapterDetectThread;
-
-    if (adapter_detect_thread->CreateThread(nullptr, false) != 1) {
-        g_log_Wireless.AppendText("adapter detect thread create failed");
-        return false;
-    }
-
-    if (adapter_detect_thread->StartThread()) {
-        g_logSystem.AppendText("Adapter Detect Thread start failed");
-        return false;
-    }
-
-    proxy_detect_thread = new CProxyDetectThread;
-
-    if (proxy_detect_thread->CreateThread(nullptr, false) != 1) {
-        g_log_Wireless.AppendText(
-            "Proxy detect thread create failed");
-        return false;
-    }
-
-    if (proxy_detect_thread->StartThread()) {
-        g_logSystem.AppendText("Proxy Detect Thread start failed");
-        return false;
-    }
+//
+//    adapter_detect_thread = new CAdapterDetectThread;
+//
+//    if (adapter_detect_thread->CreateThread(nullptr, false) != 1) {
+//        g_log_Wireless.AppendText("adapter detect thread create failed");
+//        return false;
+//    }
+//
+//    if (adapter_detect_thread->StartThread()) {
+//        g_logSystem.AppendText("Adapter Detect Thread start failed");
+//        return false;
+//    }
+//
+//    proxy_detect_thread = new CProxyDetectThread;
+//
+//    if (proxy_detect_thread->CreateThread(nullptr, false) != 1) {
+//        g_log_Wireless.AppendText(
+//            "Proxy detect thread create failed");
+//        return false;
+//    }
+//
+//    if (proxy_detect_thread->StartThread()) {
+//        g_logSystem.AppendText("Proxy Detect Thread start failed");
+//        return false;
+//    }
 
     return true;
 }
@@ -1772,27 +1771,27 @@ DEFINE_DISPATH_MESSAGE_HANDLER(
         case REQUEST_FAKING_MAC:
             logoff_reason = LOGOFF_REASON_OTHERS_FAKING_MAC;
 
-            if (
-                proxy_detect_thread &&
-                proxy_detect_thread->GetFakeInfo(&fake_ipaddr, &fake_macaddr)
-            ) {
-                sprintf(
-                    tmpbuf,
-                    CChangeLanguage::Instance().LoadString(278).c_str(),
-                    inet_ntoa({ fake_ipaddr }),
-                    fake_macaddr.ether_addr_octet[0],
-                    fake_macaddr.ether_addr_octet[1],
-                    fake_macaddr.ether_addr_octet[2],
-                    fake_macaddr.ether_addr_octet[3],
-                    fake_macaddr.ether_addr_octet[4],
-                    fake_macaddr.ether_addr_octet[5]
-                );
-                logoff_message = tmpbuf;
-
-            } else {
-                logoff_message = "Others are faking your mac";
-                g_log_Wireless.AppendText("GetFakeMacInfo failed");
-            }
+//            if (
+//                proxy_detect_thread &&
+//                proxy_detect_thread->GetFakeInfo(&fake_ipaddr, &fake_macaddr)
+//            ) {
+//                sprintf(
+//                    tmpbuf,
+//                    CChangeLanguage::Instance().LoadString(278).c_str(),
+//                    inet_ntoa({ fake_ipaddr }),
+//                    fake_macaddr.ether_addr_octet[0],
+//                    fake_macaddr.ether_addr_octet[1],
+//                    fake_macaddr.ether_addr_octet[2],
+//                    fake_macaddr.ether_addr_octet[3],
+//                    fake_macaddr.ether_addr_octet[4],
+//                    fake_macaddr.ether_addr_octet[5]
+//                );
+//                logoff_message = tmpbuf;
+//
+//            } else {
+//                logoff_message = "Others are faking your mac";
+//                g_log_Wireless.AppendText("GetFakeMacInfo failed");
+//            }
 
             break;
 
@@ -2917,22 +2916,22 @@ bool CContextControlThread::StartAdapterStateCheck() const
 {
     char errbuf[512] = {};
     struct ether_addr macaddr = {};
-    GetAdapterMac(&macaddr);
-
-    if (
-        !adapter_detect_thread->StartDetect(
-            configure_info.public_adapter.c_str(),
-            &macaddr,
-            configure_info.dhcp_ipinfo.ip4_ipaddr,
-            thread_id,
-            ADAPTER_STATE_MTYPE,
-            false,
-            errbuf
-        )
-    ) {
-        g_log_Wireless.AppendText("Fail to start adapter state checking.");
-        return false;
-    }
+//    GetAdapterMac(&macaddr);
+//
+//    if (
+//        !adapter_detect_thread->StartDetect(
+//            configure_info.public_adapter.c_str(),
+//            &macaddr,
+//            configure_info.dhcp_ipinfo.ip4_ipaddr,
+//            thread_id,
+//            ADAPTER_STATE_MTYPE,
+//            false,
+//            errbuf
+//        )
+//    ) {
+//        g_log_Wireless.AppendText("Fail to start adapter state checking.");
+//        return false;
+//    }
 
     return true;
 }
@@ -3247,7 +3246,8 @@ int CContextControlThread::StartStateMachine(bool no_get_dhcpinfo)
 
 bool CContextControlThread::StopAdapterStateCheck() const
 {
-    return adapter_detect_thread ? adapter_detect_thread->StopDetect(2) : true;
+    return true;
+//    return adapter_detect_thread ? adapter_detect_thread->StopDetect(2) : true;
 }
 
 void CContextControlThread::StopAuthentication(

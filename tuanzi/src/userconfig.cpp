@@ -427,7 +427,7 @@ void CUserConfig::SaveUsernameAndPW(
     userinfo.username_len = username.length();
     userinfo.password_len = write_password ? password.length() : 0;
     userinfo.username = username;
-    userinfo.password = write_password ? "" : password;
+    userinfo.password = write_password ? password : "";
     WriteRegUserInfo(userinfo);
 }
 

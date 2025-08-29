@@ -92,7 +92,7 @@ void replace_all_distinct(
 void chk_call_back(int)
 {
     rj_printf_debug("程序资源遭到破坏\n");
-    exit(0);
+//    exit(0);
 }
 
 bool set_msg_config(const std::string &key, int val)
@@ -797,6 +797,7 @@ void WriteRegUserInfo(
         return;
     }
 
+    iniparser_set(ini, "pu32list", nullptr);
     iniparser_set(
         ini,
         "pu32list:unl2t1",

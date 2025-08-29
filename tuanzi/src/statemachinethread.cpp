@@ -302,7 +302,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(OnStateMove, CStateMachineThread)
         return;
     }
 
-    g_log_Wireless.AppendText(" before m_state = CreateState(p1)=%d", arg1);
+    g_log_Wireless.AppendText(" before m_state = CreateState(p1)=%d", new_state);
     state_visual = CreateState(new_state);
     state_visual->Initlize();
 
@@ -310,7 +310,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(OnStateMove, CStateMachineThread)
         CtrlThread->IsRuijieNas() ||
         state_visual->state_data->prev_state != STATE_AUTHENTICATED
     )
-        CtrlThread->PostThreadMessage(STATE_MACHINE_RETURN_MTYPE, arg1, 0);
+        CtrlThread->PostThreadMessage(STATE_MACHINE_RETURN_MTYPE, new_state, 0);
 
     state_visual->MoveState();
 

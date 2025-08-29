@@ -225,10 +225,10 @@ int main(int argc, char **argv)
         S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH
     );
 
-    if (geteuid()) { // not superuser
-        message_info(cinstance.LoadString(257) + '\n');
-        return EXIT_SUCCESS;
-    }
+//    if (geteuid()) { // not superuser
+//        message_info(cinstance.LoadString(257) + '\n');
+//        return EXIT_SUCCESS;
+//    }
 
     if (request_exit == 1) {
         killrjsu();

@@ -365,7 +365,7 @@ void CRGPrivateProc::GetHardDiskSN(char *buf, unsigned &len)
         CtrlThread->diskid.length(),
         CtrlThread->diskid.c_str()
     );
-    buf[len++] = std::max(CtrlThread->diskid.length(), 64ul);
+    buf[len++] = std::min(CtrlThread->diskid.length(), 64ul);
     memcpy(&buf[len], CtrlThread->diskid.c_str(), buf[1]);
     len += buf[1];
 }

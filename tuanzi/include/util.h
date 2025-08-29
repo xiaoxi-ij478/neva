@@ -155,19 +155,17 @@ static inline void swap128(char *val)
 }
 
 #define free_list_with_func_custom_next(head, func, next) \
-    for (auto *h = (head), *n = h->next; h; h = n, n = h ? h->next : nullptr) \
+    for (auto h = (head), n = h ? h->next : nullptr; h; h = n, n = h ? h->next : nullptr) \
         func(h)
 
-#define __free_list_delete_operator(o) delete (o)
-
 #define free_list_with_custom_next(head, next) \
-    free_list_with_func_custom_next(head, __free_list_delete_operator, next)
+    free_list_with_func_custom_next(head, delete, next)
 
 #define free_list_with_func(head, func) \
     free_list_with_func_custom_next(head, func, next)
 
 #define free_list(head) \
-    free_list_with_func_custom_next(head, __free_list_delete_operator, next)
+    free_list_with_func_custom_next(head, delete, next)
 
 #define UNUSED_VAR(name) (void)name
 
