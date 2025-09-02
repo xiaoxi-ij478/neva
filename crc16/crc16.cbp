@@ -15,7 +15,6 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-ggdb3" />
-					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -37,9 +36,9 @@
 		<Compiler>
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add directory="include" />
+			<Add directory="include/crc16" />
 		</Compiler>
-		<Unit filename="include/crc16.h" />
+		<Unit filename="include/crc16/crc16.h" />
 		<Unit filename="src/crc16.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -33,12 +33,9 @@ bool XML_PARSER::Add_ElementBefore(const char *name)
     if (!currentElement->Parent())
         return true;
 
-    if (
-        !(
-            newNode =
-                currentElement->Parent()->InsertBeforeChild(currentElement, el)
-        )
-    )
+    newNode = currentElement->Parent()->InsertBeforeChild(currentElement, el);
+
+    if (!newNode)
         return true;
 
     currentElement = newNode;
@@ -54,15 +51,12 @@ bool XML_PARSER::Add_FirstChildElement(const char *name)
         return true;
 
     if (currentElement->FirstChildElement()) {
-        if (
-            !(
-                newNode =
-                    currentElement->InsertBeforeChild(
-                        currentElement->FirstChildElement(),
-                        el
-                    )
-            )
-        )
+        newNode = currentElement->InsertBeforeChild(
+                      currentElement->FirstChildElement(),
+                      el
+                  );
+
+        if (!newNode)
             return true;
 
     } else if (!(newNode = currentElement->InsertEndChild(el)))

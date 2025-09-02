@@ -15,7 +15,6 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-ggdb3" />
-					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -27,7 +26,6 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -38,18 +36,19 @@
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-fPIC" />
+			<Add directory="include/ampheck" />
 		</Compiler>
-		<Unit filename="include/ampheck.h" />
-		<Unit filename="include/md4.h" />
-		<Unit filename="include/md5.h" />
-		<Unit filename="include/ripemd128.h" />
-		<Unit filename="include/ripemd160.h" />
-		<Unit filename="include/sha0.h" />
-		<Unit filename="include/sha1.h" />
-		<Unit filename="include/sha224.h" />
-		<Unit filename="include/sha256.h" />
-		<Unit filename="include/sha384.h" />
-		<Unit filename="include/sha512.h" />
+		<Unit filename="include/ampheck/ampheck.h" />
+		<Unit filename="include/ampheck/md4.h" />
+		<Unit filename="include/ampheck/md5.h" />
+		<Unit filename="include/ampheck/ripemd128.h" />
+		<Unit filename="include/ampheck/ripemd160.h" />
+		<Unit filename="include/ampheck/sha0.h" />
+		<Unit filename="include/ampheck/sha1.h" />
+		<Unit filename="include/ampheck/sha224.h" />
+		<Unit filename="include/ampheck/sha256.h" />
+		<Unit filename="include/ampheck/sha384.h" />
+		<Unit filename="include/ampheck/sha512.h" />
 		<Unit filename="src/md4.c">
 			<Option compilerVar="CC" />
 			<Option compile="0" />

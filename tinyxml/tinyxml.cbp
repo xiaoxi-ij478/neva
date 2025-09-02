@@ -15,7 +15,6 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-ggdb3" />
-					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -27,7 +26,6 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add directory="include" />
 				</Compiler>
 			</Target>
 		</Build>
@@ -37,9 +35,10 @@
 			<Add option="-fPIC" />
 			<Add option="-fexceptions" />
 			<Add option="-DTIXML_USE_STL" />
+			<Add directory="include/tinyxml" />
 		</Compiler>
-		<Unit filename="include/tinystr.h" />
-		<Unit filename="include/tinyxml.h" />
+		<Unit filename="include/tinyxml/tinystr.h" />
+		<Unit filename="include/tinyxml/tinyxml.h" />
 		<Unit filename="src/tinystr.cpp" />
 		<Unit filename="src/tinyxml.cpp" />
 		<Unit filename="src/tinyxmlerror.cpp" />

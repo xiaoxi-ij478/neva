@@ -3,7 +3,7 @@
 
 CMD5ForVz::CMD5ForVz() : ctx()
 {
-    MD5Init_Vz(&ctx);
+    rhash_md5_init_Vz(&ctx);
 }
 
 CMD5ForVz::~CMD5ForVz()
@@ -11,7 +11,7 @@ CMD5ForVz::~CMD5ForVz()
 
 void CMD5ForVz::Update(const char *buf, unsigned buflen)
 {
-    MD5Update_Vz(&ctx, reinterpret_cast<const unsigned char *>(buf), buflen);
+    rhash_md5_update_Vz(&ctx, reinterpret_cast<const unsigned char *>(buf), buflen);
 }
 
 char *CMD5ForVz::Final()
@@ -46,7 +46,7 @@ void CMD5ForVz::Final2CharBuff(char *buf, unsigned buflen)
     if (buflen < 16) // buffer size is not enough
         return;
 
-    MD5Final_Vz(reinterpret_cast<unsigned char *>(buf), &ctx);
+    rhash_md5_final_Vz(&ctx,reinterpret_cast<unsigned char *>(buf));
 }
 
 char *CMD5ForVz::GetMD5(const char *buf, unsigned buflen)

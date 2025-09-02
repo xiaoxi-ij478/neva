@@ -39,7 +39,7 @@
 			<Add option="-Wall" />
 			<Add option="-fPIC" />
 		</Compiler>
-		<Unit filename="include/d3des.h" />
+		<Unit filename="include/d3des/d3des.h" />
 		<Unit filename="src/d3des.c">
 			<Option compilerVar="CC" />
 		</Unit>

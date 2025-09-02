@@ -275,7 +275,7 @@ int main(int argc, char **argv)
     }
 
     bLoadLib = true;
-    set_msg_config("msgmni", 0x80);
+    set_msg_config("msgmni", 0x8000);
     set_msg_config("msgmax", 0x6000);
     set_msg_config("msgmnb", 0xC000);
     InitAppMain();

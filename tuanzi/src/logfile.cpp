@@ -32,7 +32,7 @@ void CLogFile::GetTimeString(char *dst)
 
 void CLogFile::HexPrinter(const char *arr, unsigned len)
 {
-    char *s = new char[len * 2];
+    char *s = new char[len * 2 + 1];
 
     for (unsigned i = 0; i < len; i++)
         sprintf(s + i * 2, "%02x", arr[i]);

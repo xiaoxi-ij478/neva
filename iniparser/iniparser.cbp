@@ -36,10 +36,10 @@
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-fPIC" />
-			<Add directory="include" />
+			<Add directory="include/iniparser" />
 		</Compiler>
-		<Unit filename="include/dictionary.h" />
-		<Unit filename="include/iniparser.h" />
+		<Unit filename="include/iniparser/dictionary.h" />
+		<Unit filename="include/iniparser/iniparser.h" />
 		<Unit filename="src/dictionary.c">
 			<Option compilerVar="CC" />
 		</Unit>

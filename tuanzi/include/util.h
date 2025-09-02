@@ -9,7 +9,7 @@ extern void replace_all_distinct(
     const std::string &srcstr,
     const std::string &dststr
 );
-[[noreturn]] extern void chk_call_back(int);
+extern void chk_call_back(int);
 extern bool set_msg_config(const std::string &key, int val);
 extern void ChangeSelfSvrParam(void *);
 extern void CoInitialize();
@@ -168,5 +168,7 @@ static inline void swap128(char *val)
     free_list_with_func_custom_next(head, delete, next)
 
 #define UNUSED_VAR(name) (void)name
+
+#define ROUND_TO_MULTIPLE(n, m) (((n / m) + !!(n % m)) * m)
 
 #endif // UTIL_H_INCLUDED

@@ -30,13 +30,21 @@ int CEncryption::base64_decode(const char *src, char *dst)
         tmp[2] = *src++;
         tmp[3] = *src++;
 
-        if (tmp[3] == '=')
+        if (tmp[3] == '=') {
+            if (tmp[2] == '=')
+                written += 1;
+
+            else
+                written += 2;
+
             met_equal = true;
+
+        } else
+            written += 3;
 
         *dst++ = base64_cbytes[tmp[0]] << 2 | base64_cbytes[tmp[1]] >> 4;
         *dst++ = (base64_cbytes[tmp[1]] & 0xf) << 4 | base64_cbytes[tmp[2]] >> 2;
         *dst++ = (base64_cbytes[tmp[2]] & 0x3) << 6 | base64_cbytes[tmp[3]];
-        written += 3;
     }
 
 //    if (srclen % 4) // data is truncated

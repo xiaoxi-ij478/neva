@@ -4,44 +4,44 @@
 extern int code_convert(
     const char *fromcode,
     const char *tocode,
-    const char *inbuf,
-    size_t inbytesleft,
-    char *outbuf,
-    size_t outbytesleft
+    const char **inbuf,
+    size_t *inbytesleft,
+    char **outbuf,
+    size_t *outbytesleft
 );
 extern int g2u(
-    const char *inbuf,
-    size_t inbytesleft,
-    char *outbuf,
-    size_t outbytesleft
+    const char **inbuf,
+    size_t *inbytesleft,
+    char **outbuf,
+    size_t *outbytesleft
 );
 extern int u2g(
-    const char *inbuf,
-    size_t inbytesleft,
-    char *outbuf,
-    size_t outbytesleft
+    const char **inbuf,
+    size_t *inbytesleft,
+    char **outbuf,
+    size_t *outbytesleft
 );
 // the original implementation does not include this function
-extern int ConvertGBKToUtf8(
+extern size_t ConvertGBKToUtf8(
     char *outbuf,
-    int outbytesleft,
+    size_t outbytesleft,
     const char *inbuf,
-    int inbytesleft
+    size_t inbytesleft
 );
-extern int ConvertGBKToUtf8(
+extern size_t ConvertGBKToUtf8(
     std::string &outbuf,
     const char *inbuf,
-    int inbytesleft
+    size_t inbytesleft
 );
-extern int ConvertUtf8ToGBK(
+extern size_t ConvertUtf8ToGBK(
     char *outbuf,
-    int outbytesleft,
+    size_t outbytesleft,
     const char *inbuf,
-    int inbytesleft
+    size_t inbytesleft
 );
-extern int ConvertUtf8ToGBK(
+extern size_t ConvertUtf8ToGBK(
     const char *inbuf,
-    int inbytesleft,
+    size_t inbytesleft,
     std::string &outbuf
 );
 

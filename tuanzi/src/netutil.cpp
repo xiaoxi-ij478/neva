@@ -60,11 +60,12 @@ unsigned short ComputeTcpPseudoHeaderChecksum(
     header.real_header = *tcpheader;
 #undef SET_PSEUDO_HEADER_INFO
     memcpy(header.data, databuf, length);
-    return tcpheader->check =
-               checksum(
-                   reinterpret_cast<unsigned short *>(&header),
-                   length + sizeof(header.real_header) + sizeof(header.pseudo_header)
-               );
+    return tcpheader->check = htons(
+                                  checksum(
+                                      reinterpret_cast<unsigned short *>(&header),
+                                      length + sizeof(header.real_header) + sizeof(header.pseudo_header)
+                                  )
+                              );
 }
 
 unsigned short ComputeUdpPseudoHeaderChecksumV4(
@@ -83,11 +84,12 @@ unsigned short ComputeUdpPseudoHeaderChecksumV4(
     header.real_header = *udpheader;
 #undef SET_PSEUDO_HEADER_INFO
     memcpy(header.data, databuf, length);
-    return udpheader->check =
-               checksum(
-                   reinterpret_cast<unsigned short *>(&header),
-                   length + sizeof(header.real_header) + sizeof(header.pseudo_header)
-               );
+    return udpheader->check = htons(
+                                  checksum(
+                                      reinterpret_cast<unsigned short *>(&header),
+                                      length + sizeof(header.real_header) + sizeof(header.pseudo_header)
+                                  )
+                              );
 }
 
 unsigned short checksum(const unsigned short *data, unsigned len)
@@ -343,7 +345,7 @@ bool get_alternate_dns(char *dest, unsigned &length)
     }
 
     length = real_length;
-    dest[length - 1] = 0;
+    dest[real_length ? length - 1 : 0] = 0;
     return true;
 }
 
@@ -794,11 +796,12 @@ unsigned InitIpv4Header(
     header->check = 0;
     header->saddr = inet_addr(srcaddr);
     header->daddr = inet_addr(dstaddr);
-    header->check =
-        checksum(
-            reinterpret_cast<unsigned short *>(header),
-            sizeof(struct iphdr)
-        );
+    header->check = htons(
+                        checksum(
+                            reinterpret_cast<unsigned short *>(header),
+                            sizeof(struct iphdr)
+                        )
+                    );
     return sizeof(struct iphdr);
 }
 
@@ -941,55 +944,55 @@ void *dhclient_thread(void *varg)
             static_cast<struct DHClientThreadStruct *>(varg);
 
     if (get_os_type() != OS_FEDORA || isFileExist("/sbin/dhclient-script")) {
-        if (get_os_type() != OS_FEDORA)
-            g_log_Wireless.AppendText("%s file is no exist.", "/sbin/dhclient-script");
-
-        g_log_Wireless.AppendText("sfFile NULL");
-        system(
-            std::string("dhclient ")
-            .append(arg->ipaddr)
-            /*.append(" 2>&-")*/
-            .c_str()
-        );
+//        if (get_os_type() != OS_FEDORA)
+//            g_log_Wireless.AppendText("%s file is no exist.", "/sbin/dhclient-script");
+//
+//        g_log_Wireless.AppendText("sfFile NULL");
+//        system(
+//            std::string("dhclient ")
+//            .append(arg->ipaddr)
+//            /*.append(" 2>&-")*/
+//            .c_str()
+//        );
         sem_post(arg->semaphore);
         delete arg;
         return nullptr;
     }
 
-    chmod("/sbin/dhclient-script", S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-    chmod("/sbin/dhclient-script", S_IRWXU | S_IRGRP | S_IXGRP | S_IXOTH);
-    addStringOnLineHead(
-        "/sbin/dhclient-script",
-        "/sbin/rjsu-dhclient-script",
-        "ip link set ${interface} down",
-        "#"
-    );
-    addStringOnLineHead(
-        "/sbin/dhclient-script",
-        "/sbin/rjsu-dhclient-script",
-        "ip link set $interface down",
-        "#"
-    );
-    addStringOnLineHead(
-        "/sbin/dhclient-script",
-        "/sbin/rjsu-dhclient-script",
-        "ifconfig $interface inet 0 down",
-        "#"
-    );
-    addStringOnLineHead(
-        "/sbin/dhclient-script",
-        "/sbin/rjsu-dhclient-script",
-        "ifconfig ${interface} inet 0 down",
-        "#"
-    );
-    g_log_Wireless.AppendText("sfFile:%s", "/sbin/rjsu-dhclient-script");
-    system(
-        std::string("dhclient -sf ")
-        .append("/sbin/rjsu-dhclient-script")
-        .append(arg->ipaddr)
-        /*.append(" 2>&-")*/
-        .c_str()
-    );
+//    chmod("/sbin/dhclient-script", S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+//    chmod("/sbin/dhclient-script", S_IRWXU | S_IRGRP | S_IXGRP | S_IXOTH);
+//    addStringOnLineHead(
+//        "/sbin/dhclient-script",
+//        "/sbin/rjsu-dhclient-script",
+//        "ip link set ${interface} down",
+//        "#"
+//    );
+//    addStringOnLineHead(
+//        "/sbin/dhclient-script",
+//        "/sbin/rjsu-dhclient-script",
+//        "ip link set $interface down",
+//        "#"
+//    );
+//    addStringOnLineHead(
+//        "/sbin/dhclient-script",
+//        "/sbin/rjsu-dhclient-script",
+//        "ifconfig $interface inet 0 down",
+//        "#"
+//    );
+//    addStringOnLineHead(
+//        "/sbin/dhclient-script",
+//        "/sbin/rjsu-dhclient-script",
+//        "ifconfig ${interface} inet 0 down",
+//        "#"
+//    );
+//    g_log_Wireless.AppendText("sfFile:%s", "/sbin/rjsu-dhclient-script");
+//    system(
+//        std::string("dhclient -sf ")
+//        .append("/sbin/rjsu-dhclient-script")
+//        .append(arg->ipaddr)
+//        /*.append(" 2>&-")*/
+//        .c_str()
+//    );
     sem_post(arg->semaphore);
     delete arg;
     return nullptr;

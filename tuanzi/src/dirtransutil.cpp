@@ -42,17 +42,22 @@ void CreateDirPktHead(
         sizeof(md5_checksum)
     );
     // we must hard-code keybuf and ivbuf's size
-    memcpy(checksum_buf + sizeof(struct mtagFinalDirPacket), keybuf, 8);
-    memcpy(checksum_buf + sizeof(struct mtagFinalDirPacket) + 8, ivbuf, 8);
-    memcpy(checksum_buf + sizeof(struct mtagFinalDirPacket) + 16, buf, buflen);
+    memcpy(checksum_buf + sizeof(struct mtagFinalDirPacket), buf, buflen);
+    memcpy(checksum_buf + sizeof(struct mtagFinalDirPacket) + buflen, keybuf, 8);
+    memcpy(checksum_buf + sizeof(struct mtagFinalDirPacket) + buflen + 8, ivbuf, 8);
     md5_checksum_ascii =
         CMD5Checksum::GetMD5(
             checksum_buf,
-            sizeof(struct mtagFinalDirPacket) + sizeof(md5_checksum)
+            ntohs(packet_head.packet_len) + 16
         );
     MD5StrtoUChar(md5_checksum_ascii, md5_checksum);
     memcpy(
-        reinterpret_cast<struct mtagFinalDirPacket *>(checksum_buf)->md5sum,
+        final_packet_head.md5sum,
+        md5_checksum,
+        sizeof(md5_checksum)
+    );
+    memcpy(
+        packet_head.md5sum,
         md5_checksum,
         sizeof(md5_checksum)
     );
@@ -120,7 +125,7 @@ void CopyDirTranPara(
     const struct tagDirTranPara *src
 )
 {
-    memcpy(dst, src, sizeof(struct tagDirTranPara));
+    *dst = *src;
     memset(dst->data, 0, sizeof(dst->data));
 
     if (dst->mtu > MAX_MTU)

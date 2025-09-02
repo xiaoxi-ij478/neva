@@ -109,15 +109,13 @@ int CSendPacketThread::DoSendPacket(const char *buf, unsigned buflen)
         rj_printf_debug("after pthread_mutex_lock\n");
     }
 
-    if (
-        !(
-            ret = pcap_sendpacket(
-                      pcap_handle,
-                      reinterpret_cast<const unsigned char *>(buf),
-                      buflen
-                  )
-        )
-    ) {
+    ret = pcap_sendpacket(
+              pcap_handle,
+              reinterpret_cast<const unsigned char *>(buf),
+              buflen
+          );
+
+    if (!ret) {
         pthread_mutex_unlock(&pthread_mutex2);
         return 0;
     }

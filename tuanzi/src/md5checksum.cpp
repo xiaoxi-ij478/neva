@@ -3,7 +3,7 @@
 
 CMD5Checksum::CMD5Checksum() : ctx()
 {
-    MD5Init(&ctx);
+    rhash_md5_init(&ctx);
 }
 
 CMD5Checksum::~CMD5Checksum()
@@ -11,7 +11,7 @@ CMD5Checksum::~CMD5Checksum()
 
 void CMD5Checksum::Update(const char *buf, unsigned buflen)
 {
-    MD5Update(&ctx, reinterpret_cast<const unsigned char *>(buf), buflen);
+    rhash_md5_update(&ctx, reinterpret_cast<const unsigned char *>(buf), buflen);
 }
 
 char *CMD5Checksum::Final()
@@ -38,6 +38,7 @@ char *CMD5Checksum::Final()
             digest_txt[(i << 1) + 1] = lower - 10 + 'a';
     }
 
+    digest_txt[32] = 0;
     return digest_txt;
 }
 
@@ -46,7 +47,7 @@ void CMD5Checksum::Final2CharBuff(char *buf, unsigned buflen)
     if (buflen < 16) // buffer size is not enough
         return;
 
-    MD5Final(reinterpret_cast<unsigned char *>(buf), &ctx);
+    rhash_md5_final(&ctx, reinterpret_cast<unsigned char *>(buf));
 }
 
 char *CMD5Checksum::GetMD5(const char *buf, unsigned buflen)

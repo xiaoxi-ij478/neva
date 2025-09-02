@@ -351,6 +351,7 @@ bool CLnxThread::KillTimer(timer_t &timerid)
             g_logFile_start.AppendText("CLnxThread(%s)::KillTimer() OK", classname);
             timer->ti = 0;
             timerid = 0;
+            pthread_mutex_unlock(&pthread_mutex);
             return true;
         }
 
@@ -366,6 +367,7 @@ bool CLnxThread::KillTimer(timer_t &timerid)
             g_logFile_start.AppendText("CLnxThread(%s)::KillTimer() OK", classname);
             timer->ti = 0;
             timerid = 0;
+            pthread_mutex_unlock(&pthread_mutex);
             return true;
         }
 

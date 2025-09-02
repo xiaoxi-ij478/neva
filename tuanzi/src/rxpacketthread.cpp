@@ -260,7 +260,7 @@ void CRxPacketThread::RecvPacketCallBack(
             !IsLoopBack(
                 reinterpret_cast<struct ether_addr *>(pkg->etherheader.ether_shost)
             ) &&
-            !IsHostDstMac(
+            IsHostDstMac(
                 reinterpret_cast<struct ether_addr *>(pkg->etherheader.ether_dhost)
             )
         )

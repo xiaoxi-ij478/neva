@@ -20,7 +20,7 @@ class CMD5ForVz
         );
 
     private:
-        MD5_CTX ctx;
+        md5_ctx ctx;
 };
 
 #endif // MD5FORVZ_H_INCLUDED

@@ -134,6 +134,7 @@ class CDownLoadThread : public CLnxThread
             int port,
             int flag
         ) const;
+        [[gnu::fd_arg(1)]]
         int xconnect(int fd, const sockaddr *addr, socklen_t addrlen) const;
         int xconnect_ftpdata(
             struct ftp_host_info_s *hostinfo,

@@ -24,7 +24,6 @@
 					<Add option="-Wpointer-arith" />
 					<Add option="-Wbad-function-cast" />
 					<Add option="-Wmissing-prototypes" />
-					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -45,7 +44,6 @@
 					<Add option="-Wpointer-arith" />
 					<Add option="-Wbad-function-cast" />
 					<Add option="-Wmissing-prototypes" />
-					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -56,35 +54,36 @@
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-fPIC" />
+			<Add directory="include/rhash" />
 		</Compiler>
-		<Unit filename="include/aich.h" />
-		<Unit filename="include/algorithms.h" />
-		<Unit filename="include/byte_order.h" />
-		<Unit filename="include/config.h" />
-		<Unit filename="include/crc32.h" />
-		<Unit filename="include/ed2k.h" />
-		<Unit filename="include/edonr.h" />
-		<Unit filename="include/gost.h" />
-		<Unit filename="include/has160.h" />
-		<Unit filename="include/hex.h" />
-		<Unit filename="include/md4.h" />
-		<Unit filename="include/md5.h" />
-		<Unit filename="include/plug_openssl.h" />
-		<Unit filename="include/rhash.h" />
-		<Unit filename="include/rhash_timing.h" />
-		<Unit filename="include/ripemd-160.h" />
-		<Unit filename="include/rutil.h" />
-		<Unit filename="include/sha1.h" />
-		<Unit filename="include/sha256.h" />
-		<Unit filename="include/sha3.h" />
-		<Unit filename="include/sha512.h" />
-		<Unit filename="include/snefru.h" />
-		<Unit filename="include/test_hashes.h" />
-		<Unit filename="include/tiger.h" />
-		<Unit filename="include/torrent.h" />
-		<Unit filename="include/tth.h" />
-		<Unit filename="include/ustd.h" />
-		<Unit filename="include/whirlpool.h" />
+		<Unit filename="include/rhash/aich.h" />
+		<Unit filename="include/rhash/algorithms.h" />
+		<Unit filename="include/rhash/byte_order.h" />
+		<Unit filename="include/rhash/config.h" />
+		<Unit filename="include/rhash/crc32.h" />
+		<Unit filename="include/rhash/ed2k.h" />
+		<Unit filename="include/rhash/edonr.h" />
+		<Unit filename="include/rhash/gost.h" />
+		<Unit filename="include/rhash/has160.h" />
+		<Unit filename="include/rhash/hex.h" />
+		<Unit filename="include/rhash/md4.h" />
+		<Unit filename="include/rhash/md5.h" />
+		<Unit filename="include/rhash/plug_openssl.h" />
+		<Unit filename="include/rhash/rhash.h" />
+		<Unit filename="include/rhash/rhash_timing.h" />
+		<Unit filename="include/rhash/ripemd-160.h" />
+		<Unit filename="include/rhash/rutil.h" />
+		<Unit filename="include/rhash/sha1.h" />
+		<Unit filename="include/rhash/sha256.h" />
+		<Unit filename="include/rhash/sha3.h" />
+		<Unit filename="include/rhash/sha512.h" />
+		<Unit filename="include/rhash/snefru.h" />
+		<Unit filename="include/rhash/test_hashes.h" />
+		<Unit filename="include/rhash/tiger.h" />
+		<Unit filename="include/rhash/torrent.h" />
+		<Unit filename="include/rhash/tth.h" />
+		<Unit filename="include/rhash/ustd.h" />
+		<Unit filename="include/rhash/whirlpool.h" />
 		<Unit filename="src/aich.c">
 			<Option compilerVar="CC" />
 			<Option compile="0" />
@@ -135,8 +134,6 @@
 		</Unit>
 		<Unit filename="src/md5.c">
 			<Option compilerVar="CC" />
-			<Option compile="0" />
-			<Option link="0" />
 		</Unit>
 		<Unit filename="src/plug_openssl.c">
 			<Option compilerVar="CC" />

@@ -303,6 +303,7 @@ bool CSuConfigFile::WritePrivateProfileString(
     if ((fp = fopen(cfgpath.c_str(), "w"))) {
         iniparser_dump_ini(ini, fp);
         fclose(fp);
+        fp = nullptr;
     }
 
     config_dirty = true;

@@ -318,7 +318,7 @@ void shownotify(
 {
     char cur_date[64] = {};
 
-    if (content != g_strNotify)
+    if (content == g_strNotify)
         return;
 
     g_strNotify = content;

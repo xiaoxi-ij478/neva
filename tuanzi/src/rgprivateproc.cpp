@@ -385,22 +385,15 @@ void CRGPrivateProc::GetIPv4Info(char *buf, unsigned &len)
     CtrlThread->GetDHCPInfoParam(dhcp_ipinfo);
     buf[len++] = 0x50;
     buf[len++] = 0x11;
-    buf[len++] = dhcp_ipinfo.dhcp_enabled ? 0 : dhcp_ipinfo.ip4_ipaddr >> 24;
-    buf[len++] = dhcp_ipinfo.dhcp_enabled ? 0 : dhcp_ipinfo.ip4_ipaddr >> 16 & 0xff;
-    buf[len++] = dhcp_ipinfo.dhcp_enabled ? 0 : dhcp_ipinfo.ip4_ipaddr >> 8 & 0xff;
-    buf[len++] = dhcp_ipinfo.dhcp_enabled ? 0 : dhcp_ipinfo.ip4_ipaddr & 0xff;
-    buf[len++] = dhcp_ipinfo.ip4_netmask >> 24;
-    buf[len++] = dhcp_ipinfo.ip4_netmask >> 16 & 0xff;
-    buf[len++] = dhcp_ipinfo.ip4_netmask >> 8 & 0xff;
-    buf[len++] = dhcp_ipinfo.ip4_netmask & 0xff;
-    buf[len++] = dhcp_ipinfo.gateway >> 24;
-    buf[len++] = dhcp_ipinfo.gateway >> 16 & 0xff;
-    buf[len++] = dhcp_ipinfo.gateway >> 8 & 0xff;
-    buf[len++] = dhcp_ipinfo.gateway & 0xff;
-    buf[len++] = dhcp_ipinfo.dns >> 24;
-    buf[len++] = dhcp_ipinfo.dns >> 16 & 0xff;
-    buf[len++] = dhcp_ipinfo.dns >> 8 & 0xff;
-    buf[len++] = dhcp_ipinfo.dns & 0xff;
+    *reinterpret_cast<unsigned *>(&buf[len]) =
+        dhcp_ipinfo.dhcp_enabled ? 0 : dhcp_ipinfo.ip4_ipaddr;
+    len += 4;
+    *reinterpret_cast<unsigned *>(&buf[len]) = dhcp_ipinfo.ip4_netmask;
+    len += 4;
+    *reinterpret_cast<unsigned *>(&buf[len]) = dhcp_ipinfo.gateway;
+    len += 4;
+    *reinterpret_cast<unsigned *>(&buf[len]) = dhcp_ipinfo.dns;
+    len += 4;
     buf[len++] = dhcp_ipinfo.dhcp_enabled;
 }
 
@@ -411,22 +404,15 @@ void CRGPrivateProc::GetIPv4InfoForPeap(char *buf, unsigned &len)
     CtrlThread->GetDHCPInfoParam(dhcp_ipinfo);
     buf[len++] = 0x50;
     buf[len++] = 0x11;
-    buf[len++] = dhcp_ipinfo.dhcp_enabled ? 0 : dhcp_ipinfo.ip4_ipaddr >> 24;
-    buf[len++] = dhcp_ipinfo.dhcp_enabled ? 0 : dhcp_ipinfo.ip4_ipaddr >> 16 & 0xff;
-    buf[len++] = dhcp_ipinfo.dhcp_enabled ? 0 : dhcp_ipinfo.ip4_ipaddr >> 8 & 0xff;
-    buf[len++] = dhcp_ipinfo.dhcp_enabled ? 0 : dhcp_ipinfo.ip4_ipaddr & 0xff;
-    buf[len++] = dhcp_ipinfo.ip4_netmask >> 24;
-    buf[len++] = dhcp_ipinfo.ip4_netmask >> 16 & 0xff;
-    buf[len++] = dhcp_ipinfo.ip4_netmask >> 8 & 0xff;
-    buf[len++] = dhcp_ipinfo.ip4_netmask & 0xff;
-    buf[len++] = dhcp_ipinfo.gateway >> 24;
-    buf[len++] = dhcp_ipinfo.gateway >> 16 & 0xff;
-    buf[len++] = dhcp_ipinfo.gateway >> 8 & 0xff;
-    buf[len++] = dhcp_ipinfo.gateway & 0xff;
-    buf[len++] = dhcp_ipinfo.dns >> 24;
-    buf[len++] = dhcp_ipinfo.dns >> 16 & 0xff;
-    buf[len++] = dhcp_ipinfo.dns >> 8 & 0xff;
-    buf[len++] = dhcp_ipinfo.dns & 0xff;
+    *reinterpret_cast<unsigned *>(&buf[len]) =
+        dhcp_ipinfo.dhcp_enabled ? 0 : dhcp_ipinfo.ip4_ipaddr;
+    len += 4;
+    *reinterpret_cast<unsigned *>(&buf[len]) = dhcp_ipinfo.ip4_netmask;
+    len += 4;
+    *reinterpret_cast<unsigned *>(&buf[len]) = dhcp_ipinfo.gateway;
+    len += 4;
+    *reinterpret_cast<unsigned *>(&buf[len]) = dhcp_ipinfo.dns;
+    len += 4;
     buf[len++] = dhcp_ipinfo.dhcp_enabled;
 }
 
@@ -549,7 +535,7 @@ void CRGPrivateProc::GetUserPasswd(char *buf, unsigned &len)
         CtrlThread->configure_info.last_auth_password.length()
     );
     password_len = strlen(password);
-    password_len = ((password_len >> 4) + !!(password_len & 15)) << 4;
+    password_len = ROUND_TO_MULTIPLE(password_len, 16);
     buf[len++] = 0x2F;
     buf[len++] = password_len;
     RadiusEncrpytPwd(
@@ -574,7 +560,7 @@ void CRGPrivateProc::GetUserPasswd4Peap(char *buf, unsigned &len)
         CtrlThread->configure_info.last_auth_password.length()
     );
     password_len = strlen(password);
-    password_len = ((password_len >> 4) + !!(password_len & 15)) << 4;
+    password_len = ROUND_TO_MULTIPLE(password_len, 16);
     buf[len++] = 0x5F;
     buf[len++] = password_len;
     memcpy(e_pMd5Chanllenge, "!jierui9002pmsus", 16);
@@ -857,7 +843,7 @@ void CRGPrivateProc::ReadRGVendorSeg(const char *buf, unsigned len)
                 ConvertGBKToUtf8(
                     CtrlThread->private_properties.su_upgrade_url,
                     &buf[cur_pos],
-                    strlen(&buf[cur_pos])
+                    cur_datalen
                 );
                 g_dhcpDug.AppendText(
                     "CRGPrivateProc::ReadRGVendorSeg()----->SU_UPGRADE_URL"
@@ -871,7 +857,7 @@ void CRGPrivateProc::ReadRGVendorSeg(const char *buf, unsigned len)
                 ConvertGBKToUtf8(
                     CtrlThread->private_properties.account_info,
                     &buf[cur_pos],
-                    strlen(&buf[cur_pos])
+                    cur_datalen
                 );
                 g_dhcpDug.AppendText(
                     "CRGPrivateProc::ReadRGVendorSeg()----->ACCOUNT_INFO"
@@ -885,7 +871,7 @@ void CRGPrivateProc::ReadRGVendorSeg(const char *buf, unsigned len)
                 ConvertGBKToUtf8(
                     CtrlThread->private_properties.persional_info,
                     &buf[cur_pos],
-                    strlen(&buf[cur_pos])
+                    cur_datalen
                 );
                 g_dhcpDug.AppendText(
                     "CRGPrivateProc::ReadRGVendorSeg()----->PERSIONAL_INFO"
@@ -899,7 +885,7 @@ void CRGPrivateProc::ReadRGVendorSeg(const char *buf, unsigned len)
                 ConvertGBKToUtf8(
                     CtrlThread->private_properties.broadcast_str,
                     &buf[cur_pos],
-                    strlen(&buf[cur_pos])
+                    cur_datalen
                 );
                 g_dhcpDug.AppendText(
                     "CRGPrivateProc::ReadRGVendorSeg()----->BROADCASE_INFO"
@@ -913,7 +899,7 @@ void CRGPrivateProc::ReadRGVendorSeg(const char *buf, unsigned len)
                 ConvertGBKToUtf8(
                     CtrlThread->private_properties.fail_reason,
                     &buf[cur_pos],
-                    strlen(&buf[cur_pos])
+                    cur_datalen
                 );
                 g_dhcpDug.WriteString(
                     CtrlThread->private_properties.fail_reason.c_str()
@@ -1214,16 +1200,15 @@ void CRGPrivateProc::ReadRGVendorSeg(const char *buf, unsigned len)
 
     // check if it's error break
     if (!should_exit) {
-        if (!cur_type) {
+        if (!cur_type)
             g_dhcpDug.AppendText(
                 "CRGPrivateProc::ReadRGVendorSeg()----->byteType为0，不合要求!!"
             );
 
-        } else if (cur_datalen == 0xff) {
+        else if (cur_datalen == 0xff)
             g_dhcpDug.AppendText(
                 "CRGPrivateProc::ReadRGVendorSeg()----->byteDataLen不符合要求!!"
             );
-        }
     }
 
     // normal break or manual break

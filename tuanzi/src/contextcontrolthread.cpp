@@ -566,7 +566,7 @@ void CContextControlThread::DoBOOTP()
         return;
     }
 
-    if ((bootp_timerid = SetTimer(nullptr, PACKET_NOTIFY_MTYPE, 2000, nullptr))) {
+    if (!(bootp_timerid = SetTimer(nullptr, DHCP_IP_MTYPE, 2000, nullptr))) {
         g_log_Wireless.AppendText("\t SetTimer error");
         stop_dhclient_asyn();
         sem_wait(&bootp_semaphore);
@@ -3015,7 +3015,7 @@ void CContextControlThread::StartDirectTrans(
                 configure_info.last_auth_username.c_str(),
                 configure_info.last_auth_username.length()
             );
-            strcpy(smp_para_dir.username, tmpbuf);
+            strcpy(sam_para_dir.username, tmpbuf);
             memcpy(
                 sam_para_dir.keybuf,
                 private_prop.encrypt_key,

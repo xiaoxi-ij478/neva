@@ -15,7 +15,6 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-ggdb3" />
-					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -27,7 +26,6 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -37,8 +35,9 @@
 		<Compiler>
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
+			<Add directory="include/rc4" />
 		</Compiler>
-		<Unit filename="include/rc4.h" />
+		<Unit filename="include/rc4/rc4.h" />
 		<Unit filename="src/rc4.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -9,8 +9,8 @@ class CSuDES
 
         int Decrypts(char *buf, unsigned buflen) const;
         int Encrypts(char *buf, unsigned buflen) const;
-        int SetIVBuf(const char *iv, unsigned ivlen) const;
-        int SetKeyBuf(const char *key, unsigned keylen) const;
+        int SetIVBuf(const char *iv, unsigned ivlen);
+        int SetKeyBuf(const char *key, unsigned keylen);
 
     private:
         char *ivbuf;

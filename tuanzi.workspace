@@ -14,10 +14,8 @@
 			<Depends filename="crc16/crc16.cbp" />
 			<Depends filename="rhash/rhash.cbp" />
 			<Depends filename="rc4/rc4.cbp" />
-			<Depends filename="md5/md5.cbp" />
 			<Depends filename="ampheck/ampheck.cbp" />
 		</Project>
-		<Project filename="md5/md5.cbp" />
 		<Project filename="ampheck/ampheck.cbp" />
 		<Project filename="pcap/pcap.cbp" />
 		<Project filename="wpa_supplicant/wpa_supplicant.cbp">

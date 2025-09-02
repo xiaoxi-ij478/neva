@@ -166,7 +166,9 @@ struct EAPOLFrame *CStateMachineThread::EncapsulateFrame(
                 );
 
             break;
-            default:break;
+
+        default:
+            break;
     }
 
     return eapol_frame;
@@ -195,7 +197,7 @@ void CStateMachineThread::FailNotification(struct EAPOLFrame *eapol_frame)
             CtrlThread->private_properties.services.cbegin(),
             CtrlThread->private_properties.services.cend(),
             CtrlThread->configure_info.public_service
-        ) != CtrlThread->private_properties.services.cend()
+        ) == CtrlThread->private_properties.services.cend()
     )
         fail_reason = CChangeLanguage::Instance().LoadString(202);
 
@@ -219,6 +221,7 @@ void CStateMachineThread::InitState() const
 DEFINE_DISPATH_MESSAGE_HANDLER(OnPacketNotify, CStateMachineThread)
 {
     UNUSED_VAR(arg1);
+
     if (!state_visual)
         return;
 
@@ -321,6 +324,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(OnStateMove, CStateMachineThread)
 DEFINE_DISPATH_MESSAGE_HANDLER(OnTimer, CStateMachineThread)
 {
     UNUSED_VAR(arg2);
+
     switch (arg1) {
         case AUTH_WHILE_MTYPE:
             state_visual->state_data->SetAuthWhile();
@@ -410,8 +414,8 @@ int CStateMachineThread::parseFrame(struct EAPOLFrame *eapol_frame)
     rj_printf_debug("状态机模块，收到一个报文了。");
 
     if (
-        ntohs(eapol_frame->ether_type) == ETH_P_PAE &&
-        eapol_frame->ieee8021x_packet_type == IEEE8021X_EAP_PACKET
+        eapol_frame->ether_type != ETH_P_PAE ||
+        eapol_frame->ieee8021x_packet_type != IEEE8021X_EAP_PACKET
     ) {
         DeleteFrameMemory(eapol_frame);
         return -1;
@@ -591,26 +595,26 @@ void CStateMachineThread::txRspAuth() const
         state_visual->state_data->eap_md5_datalen
     );
     md5_buf = CMD5Checksum::GetMD5(checksum_buf, checksum_buflen);
-    delete[] checksum_buf;
-    checksum_buf = nullptr;
     final_buflen =
-        (strlen(checksum_buf) >> 1) +
+        16 +
         CtrlThread->configure_info.last_auth_username.length();
     final_buf = new char[final_buflen];
     MD5StrtoUChar(md5_buf, final_buf);
+    memcpy(
+        &final_buf[16],
+        CtrlThread->configure_info.last_auth_username.c_str(),
+        CtrlThread->configure_info.last_auth_username.length()
+    );
+    delete[] checksum_buf;
+    checksum_buf = nullptr;
     delete[] md5_buf;
     md5_buf = nullptr;
-    strcpy(
-        &final_buf[strlen(checksum_buf) >> 1],
-        CtrlThread->configure_info.last_auth_username.c_str()
-    );
-    eapol_frame =
-        EncapsulateFrame(
-            IEEE8021X_EAP_PACKET,
-            EAP_TYPE_MD5,
-            final_buflen,
-            final_buf
-        );
+    eapol_frame = EncapsulateFrame(
+                      IEEE8021X_EAP_PACKET,
+                      EAP_TYPE_MD5,
+                      final_buflen,
+                      final_buf
+                  );
     delete[] final_buf;
     final_buf = nullptr;
 
@@ -627,6 +631,8 @@ void CStateMachineThread::txRspAuth() const
             eapol_pkglen,
             reinterpret_cast<unsigned long>(eapol_pkg)
         );
+
+    rj_printf_debug("Send : txRspAuth\r\n");
 }
 
 void CStateMachineThread::txRspAuthPAP() const

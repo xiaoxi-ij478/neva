@@ -20,7 +20,7 @@ class CMD5Checksum
         );
 
     private:
-        MD5_CTX ctx;
+        md5_ctx ctx;
 };
 
 #endif // MD5CHECKSUM_H_INCLUDED

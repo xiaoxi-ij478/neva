@@ -872,21 +872,17 @@ DEFINE_DISPATH_MESSAGE_HANDLER(OnInit_SAM, CDirectTranSrv)
     sam_or_smp_inited = true;
     dir_thread->StartRun();
 
-    if (dir_trans_srvpara.field_0) {
-        if (sam_gsn_receiver_id != -1)
-            dir_thread->CloseGSNReceiver(sam_gsn_receiver_id);
+    if (sam_gsn_receiver_id != -1)
+        dir_thread->CloseGSNReceiver(sam_gsn_receiver_id);
 
-        sam_gsn_receiver_id =
-            dir_thread->GSNReceiver(
-                dir_trans_srvpara.sam_ipaddr,
-                dir_trans_srvpara.sam_port,
-                dir_trans_srvpara.su_ipaddr,
-                dir_trans_srvpara.su_port,
-                thread_id,
-                ON_RECVPACKET_SAM_MTYPE
-            );
-    }
-
+    sam_gsn_receiver_id = dir_thread->GSNReceiver(
+                              dir_trans_srvpara.sam_ipaddr,
+                              dir_trans_srvpara.sam_port,
+                              dir_trans_srvpara.su_ipaddr,
+                              dir_trans_srvpara.su_port,
+                              thread_id,
+                              ON_RECVPACKET_SAM_MTYPE
+                          );
     logFile_debug.AppendText(
         "bUseHandshake2Sam：%d,m_dirTranSrvPara.dwTimerToSAM：%d",
         dir_trans_srvpara.use_handshake_to_sam,
@@ -1218,8 +1214,10 @@ void CDirectTranSrv::ParseDHCPAuthResult_ForSAM(
         delete[] some_string_buf;
 }
 
-void CDirectTranSrv::ParseDHCPAuthResult_ForSMP(const char *buf,
-        unsigned buflen)
+void CDirectTranSrv::ParseDHCPAuthResult_ForSMP(
+    const char *buf,
+    unsigned buflen
+)
 {
     std::string some_string;
     char *some_string_buf = nullptr;
@@ -1533,9 +1531,9 @@ void CDirectTranSrv::ParseReAuth(
 }
 
 void CDirectTranSrv::ParseSMPData(
-                                  const char *buf,
-                                  [[maybe_unused]] unsigned buflen
-                                  )
+    const char *buf,
+    [[maybe_unused]] unsigned buflen
+)
 {
     TiXmlDocument xml_data;
     const TiXmlNode *bc_child = nullptr;
@@ -1960,17 +1958,14 @@ bool CDirectTranSrv::PostToSam(const char *buf, unsigned buflen) const
         return ret;
 
     memcpy(newbuf, buf, buflen);
+    ret = ::PostThreadMessage(
+              thread_id,
+              ON_POST_SAM,
+              reinterpret_cast<unsigned long>(newbuf),
+              buflen
+          );
 
-    if (
-        !(
-            ret = ::PostThreadMessage(
-                      thread_id,
-                      ON_POST_SAM,
-                      reinterpret_cast<unsigned long>(newbuf),
-                      buflen
-                  )
-        )
-    )
+    if (!ret)
         delete[] newbuf;
 
     return ret;
@@ -2005,16 +2000,13 @@ bool CDirectTranSrv::PostToSmp(const char *buf, unsigned buflen) const
 
     memcpy(newbuf, buf, buflen);
 
-    if (
-        !(
             ret = ::PostThreadMessage(
                       thread_id,
                       ON_POST_SMP,
                       reinterpret_cast<unsigned long>(newbuf),
                       buflen
-                  )
-        )
-    )
+                  );
+    if (!ret)
         delete[] newbuf;
 
     return ret;

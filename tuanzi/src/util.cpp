@@ -339,20 +339,20 @@ void GetMD5File(const char *filename, char *result)
     std::ifstream ifs(filename);
     char digest[16] = {};
     char buf[512] = {};
-    MD5_CTX ctx;
+    md5_ctx ctx;
 
     if (!ifs)
         return;
 
-    MD5Init(&ctx);
+    rhash_md5_init(&ctx);
 
     while (!ifs.eof()) {
         ifs.read(buf, sizeof(buf));
-        MD5Update(&ctx, reinterpret_cast<unsigned char *>(buf), sizeof(buf));
+        rhash_md5_update(&ctx, reinterpret_cast<unsigned char *>(buf), sizeof(buf));
     }
 
     ifs.close();
-    MD5Final(reinterpret_cast<unsigned char *>(digest), &ctx);
+    rhash_md5_final(&ctx, reinterpret_cast<unsigned char *>(digest));
 
     for (unsigned i = 0; i < sizeof(digest); i++) {
         *result++ = (digest[i] >> 4) + '0';
@@ -371,7 +371,8 @@ void ParseString(
     dest.clear();
 
     while (std::getline(iss, tmp, delim))
-        dest.push_back(tmp);
+        if (!tmp.empty())
+            dest.push_back(tmp);
 }
 
 void ParseString(
@@ -387,7 +388,8 @@ void ParseString(
     dest.clear();
 
     while (i++ < max_time && std::getline(iss, tmp, delim))
-        dest.push_back(tmp);
+        if (!tmp.empty())
+            dest.push_back(tmp);
 
     if (iss.eof())
         return;
@@ -560,7 +562,6 @@ unsigned MD5StrtoUChar(const std::string &str, char *buf)
             *buf |= *it - 'a' + 10;
     }
 
-    *buf = 0;
     return str.length() >> 1;
 }
 
@@ -935,7 +936,7 @@ void RadiusEncrpytPwd(
     char tmpbuf[528] = {};
     char md5buf[16] = {};
     unsigned username_len = 0;
-    MD5_CTX md5ctx;
+    md5_ctx md5ctx;
     ConvertUtf8ToGBK(
         tmpbuf,
         512,
@@ -956,13 +957,13 @@ void RadiusEncrpytPwd(
 
     for (unsigned i = 0; i < password_len >> 4; i++) {
         memcpy(&tmpbuf[username_len], i ? md5buf : md5_challenge, 16);
-        MD5Init(&md5ctx);
-        MD5Update(
+        rhash_md5_init(&md5ctx);
+        rhash_md5_update(
             &md5ctx,
             reinterpret_cast<unsigned char *>(tmpbuf),
             username_len + 16
         );
-        MD5Final(reinterpret_cast<unsigned char *>(md5buf), &md5ctx);
+        rhash_md5_final(&md5ctx, reinterpret_cast<unsigned char *>(md5buf));
 
         for (unsigned j = 0; j < 16; j++)
             md5buf[j] ^= password[(i << 4) + j];
@@ -976,7 +977,7 @@ char GetHIRusultByLocal()
     return 0;
 }
 
-extern void RcvSvrList(const std::vector<std::string> &service_list)
+void RcvSvrList(const std::vector<std::string> &service_list)
 {
     CSuConfigFile conffile;
 

@@ -115,7 +115,6 @@
 			<Add library="rhash" />
 			<Add library="ampheck" />
 			<Add library="rc4" />
-			<Add library="md5" />
 			<Add library="pcap" />
 			<Add library="dl" />
 			<Add library="rt" />

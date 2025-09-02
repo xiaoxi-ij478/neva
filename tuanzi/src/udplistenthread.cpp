@@ -149,9 +149,9 @@ bool CUDPListenThread::DecryptPrivateData(
     CSuDES sudes;
     assert(buf && buflen);
     return
-        sudes.SetIVBuf(proto_param.ivbuf, sizeof(proto_param.ivbuf)) &&
-        sudes.SetKeyBuf(proto_param.keybuf, sizeof(proto_param.keybuf)) &&
-        sudes.Decrypts(buf, buflen);
+        !sudes.SetIVBuf(proto_param.ivbuf, sizeof(proto_param.ivbuf)) &&
+        !sudes.SetKeyBuf(proto_param.keybuf, sizeof(proto_param.keybuf)) &&
+        !sudes.Decrypts(buf, buflen);
 }
 
 bool CUDPListenThread::EncryptPrivateData(
@@ -163,9 +163,9 @@ bool CUDPListenThread::EncryptPrivateData(
     CSuDES sudes;
     assert(buf && buflen);
     return
-        sudes.SetIVBuf(proto_param.ivbuf, sizeof(proto_param.ivbuf)) &&
-        sudes.SetKeyBuf(proto_param.keybuf, sizeof(proto_param.keybuf)) &&
-        sudes.Encrypts(buf, buflen);
+        !sudes.SetIVBuf(proto_param.ivbuf, sizeof(proto_param.ivbuf)) &&
+        !sudes.SetKeyBuf(proto_param.keybuf, sizeof(proto_param.keybuf)) &&
+        !sudes.Encrypts(buf, buflen);
 }
 
 unsigned long CUDPListenThread::GetLastTimeStampForReceive(
@@ -315,13 +315,12 @@ bool CUDPListenThread::IsGoodAsyUTC(
                 (GetTickCount() - proto_param.timestamp) / 1000
             ) <= 60;
 
-    if (
-        (last_timestamp = GetLastTimeStampForReceive(
-                              proto_param.addr,
-                              proto_param.port
-                          ))
-        >= timestamp
-    ) {
+    last_timestamp = GetLastTimeStampForReceive(
+                         proto_param.addr,
+                         proto_param.port
+                     );
+
+    if (last_timestamp >= timestamp) {
         outoforder_num = GetOutOfOrderNum(proto_param.addr, proto_param.port);
         logFile_debug.AppendText(
             "时间戳校验失败，上一次报文的时间戳为%I64d，"
@@ -787,7 +786,7 @@ bool CUDPListenThread::RevcDirectPack(
         if (
             tmp_recvbind.dstaddr != pkg->ipheader.daddr ||
             tmp_recvbind.dstport != ntohs(pkg->udpheader.dest) ||
-            tmp_recvbind.srcport != ntohs(pkg->udpheader.dest) ||
+            tmp_recvbind.srcport != ntohs(pkg->udpheader.source) ||
             tmp_recvbind.srcaddr != pkg->ipheader.saddr
         )
             continue;
@@ -995,13 +994,15 @@ void CUDPListenThread::SendResponse(
             &new_packet_head.timestamp
         );
 
-    else if (
-        !(
-            new_packet_head.timestamp =
-                GetNextTimeStampForSend(proto_param.addr, proto_param.port)
-        )
-    )
-        logFile_debug.AppendText("Failed to generate time stamp for sending.");
+    else {
+        new_packet_head.timestamp = GetNextTimeStampForSend(
+                                        proto_param.addr,
+                                        proto_param.port
+                                    );
+
+        if (!new_packet_head.timestamp)
+            logFile_debug.AppendText("Failed to generate time stamp for sending.");
+    }
 
     new_packet_head.timestamp = htonl(new_packet_head.timestamp);
 #define COPY_FIELD(name) final_packet_head.name = new_packet_head.name

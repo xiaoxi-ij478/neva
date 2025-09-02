@@ -23,7 +23,9 @@ extern void free_nics_info(struct NICINFO *info);
 extern bool get_dns(in_addr_t *dst);
 extern bool get_alternate_dns(char *dst, unsigned &length);
 extern bool get_gateway(in_addr_t *result, const char *ifname);
+[[gnu::fd_arg(1)]]
 extern unsigned short get_speed_wl(int fd, char *ifname);
+[[gnu::fd_arg(1)]]
 extern unsigned short get_speed(int fd, char *ifname);
 extern bool check_manualip_indirectory(
     const char *ipaddr,

@@ -1,6 +1,7 @@
 #ifndef DISKUTIL_H_INCLUDED
 #define DISKUTIL_H_INCLUDED
 
+[[gnu::fd_arg(1)]]
 extern int get_sata_serial(int fd, char *dst);
 extern int getdiskid(char *buf, int buflen);
 

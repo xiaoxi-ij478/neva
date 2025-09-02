@@ -77,24 +77,24 @@ int CSuDES::Encrypts(char *buf, unsigned buflen) const
     return 0;
 }
 
-int CSuDES::SetIVBuf(const char *iv, unsigned ivlen) const
+int CSuDES::SetIVBuf(const char *iv, unsigned ivlen)
 {
     assert(iv);
 
     if (ivlen != 8)
         return 1;
 
-    memcpy(ivbuf ? : new char[8], iv, sizeof(char) * 8);
+    memcpy(ivbuf ? : (ivbuf = new char[8]), iv, 8);
     return 0;
 }
 
-int CSuDES::SetKeyBuf(const char *key, unsigned keylen) const
+int CSuDES::SetKeyBuf(const char *key, unsigned keylen)
 {
     assert(key);
 
     if (keylen != 8)
         return 1;
 
-    memcpy(keybuf ? : new char[8], key, sizeof(char) * 8);
+    memcpy(keybuf ? : (keybuf = new char[8]), key, 8);
     return 0;
 }

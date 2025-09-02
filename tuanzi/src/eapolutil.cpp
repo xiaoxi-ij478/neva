@@ -51,7 +51,7 @@ struct eapolpkg *ChangeToUChar(
         ret->eap_packet.id = eapol_frame->eap_id;
         ret->eap_packet.length = htons(eapol_frame->eap_length);
         ret->eap_packet.type = eapol_frame->eap_type;
-        len = offsetof(struct eapolpkg, eap_packet.type);
+        len = offsetof(struct eapolpkg, eap_packet.data.md5.value_size);
 
         if (eapol_frame->eap_type != EAP_TYPE_MD5) {
             if (eapol_frame->ieee8021x_packet_length > 5) {
@@ -75,6 +75,7 @@ struct eapolpkg *ChangeToUChar(
                 eapol_frame->eap_type_md5_data,
                 eapol_frame->ieee8021x_packet_length - 6
             );
+            len += eapol_frame->ieee8021x_packet_length - 6;
 
             if (!CtrlThread->IsRuijieNas()) {
                 len += 16;
@@ -89,9 +90,7 @@ struct eapolpkg *ChangeToUChar(
                         ret->eap_packet.length = htons(priproc_len + 22);
                     len += priproc_len;
                 }
-
-            } else
-                len += eapol_frame->ieee8021x_packet_length - 6;
+            }
         }
     }
 
@@ -237,8 +236,8 @@ struct EAPOLFrame *ChangeToEAPOLFrame(
         } else if (ret->eap_length > 22)
             priproc.ReadRGVendorSeg(
                 reinterpret_cast<const char *>
-                (eapol_pkg->eap_packet.data.md5.value_name),
-                ret->eap_type_md5_length
+                (eapol_pkg->eap_packet.data.md5.value_name + 16),
+                ret->eap_length - 22
             );
 
     } else if (ret->ieee8021x_packet_length > 5) {
@@ -431,7 +430,7 @@ void AppendPrivateProperty(
         password_buflen = strlen(password_buf);
         password_buflen =
             password_buflen ?
-            ((password_buflen << 4) + !!(password_buflen & 15)) >> 4 :
+            ROUND_TO_MULTIPLE(password_buflen, 16) :
             16;
         RadiusEncrpytPwd(
             e_pMd5Chanllenge,
@@ -1105,7 +1104,7 @@ void EncapProgrammName(const std::string &prog_name, char *buf)
 {
     char tmpbuf[128] = {};
     unsigned tmpbuflen = 0;
-    ConvertUtf8ToGBK(buf, sizeof(buf), prog_name.c_str(), prog_name.length());
+    ConvertUtf8ToGBK(tmpbuf, sizeof(tmpbuf), prog_name.c_str(), prog_name.length());
     memset(buf, 0, 32);
 
     if ((tmpbuflen = strlen(tmpbuf)) < 32)

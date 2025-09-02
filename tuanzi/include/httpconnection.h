@@ -25,6 +25,7 @@ class CHttpConnection
             int &port,
             std::string &path
         );
+        [[gnu::fd_arg_read(2)]]
         bool readHttpHeader(int fd);
         int sendRequest(const char *addr, int port, const char *request);
         [[gnu::format(printf, 2, 3)]]

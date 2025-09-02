@@ -160,9 +160,9 @@ bool CDirTranThread::DecryptPrivateData(
     CSuDES sudes;
     assert(buf && buflen);
     return
-        sudes.SetIVBuf(proto_param.ivbuf, sizeof(proto_param.ivbuf)) &&
-        sudes.SetKeyBuf(proto_param.keybuf, sizeof(proto_param.keybuf)) &&
-        sudes.Decrypts(buf, buflen);
+        !sudes.SetIVBuf(proto_param.ivbuf, sizeof(proto_param.ivbuf)) &&
+        !sudes.SetKeyBuf(proto_param.keybuf, sizeof(proto_param.keybuf)) &&
+        !sudes.Decrypts(buf, buflen);
 }
 
 bool CDirTranThread::DirTranThreadInit()
@@ -307,14 +307,13 @@ bool CDirTranThread::DoSendPacket(
         CopyDirTranPara(&dir_transpara, &trans_para);
         direct_transfer.InitPara(&trans_para);
         packet_head.response_code = DIRPACKET_REQUEST;
-        packet_head.packet_len =
-            htons(
-                std::min(
-                    MAX_MTU,
-                    static_cast<unsigned>
-                    (remain_len + sizeof(struct mtagFinalDirPacket))
-                )
-            );
+        packet_head.packet_len = htons(
+                                     std::min(
+                                         MAX_MTU,
+                                         static_cast<unsigned>
+                                         (trans_para.mtu + sizeof(struct mtagFinalDirPacket))
+                                     )
+                                 );
         packet_head.version = proto_param.version;
         packet_head.id = htonl(sender_bind.on_receive_packet_post_mtype++);
         packet_head.session_id = htonl(send_unit.session_id);
@@ -326,16 +325,15 @@ bool CDirTranThread::DoSendPacket(
                 &packet_head.timestamp
             );
 
-        else if (
-            !(
-                packet_head.timestamp =
-                    udp_listenthread->GetNextTimeStampForSend(
-                        proto_param.addr,
-                        proto_param.port
-                    )
-            )
-        )
-            logFile_debug.AppendText("Failed to generate time stamp for sending.");
+        else {
+            packet_head.timestamp = udp_listenthread->GetNextTimeStampForSend(
+                                        proto_param.addr,
+                                        proto_param.port
+                                    );
+
+            if (!packet_head.timestamp)
+                logFile_debug.AppendText("Failed to generate time stamp for sending.");
+        }
 
         packet_head.timestamp = htonLONGLONG(packet_head.timestamp);
         packet_head.field_28 = true;
@@ -367,11 +365,12 @@ bool CDirTranThread::DoSendPacket(
         );
 
         if (!send_unit.need_reply) {
-            if (!direct_transfer.Send(&final_packet, trans_para.mtu))
+            if (!direct_transfer.Send(&final_packet, ntohs(packet_head.packet_len)))
                 return false;
 
         } else {
             logFile_debug.AppendText("需要响应报文");
+            dir_respara.sender_bind = sender_bind;
             dir_respara.dir_packet_head = packet_head;
             dir_respara.event_ret = new WAIT_HANDLE;
             udp_listenthread->SetResSender(dir_respara);
@@ -382,7 +381,7 @@ bool CDirTranThread::DoSendPacket(
                 proto_param.timeout,
                 proto_param.retry_count
             );
-            direct_transfer.Send(&final_packet, trans_para.mtu);
+            direct_transfer.Send(&final_packet, ntohs(packet_head.packet_len));
             wait_ret = WaitForSingleObject(dir_respara.event_ret, proto_param.timeout);
             logFile_debug.AppendText("wait ret :%u", wait_ret);
 
@@ -445,9 +444,9 @@ bool CDirTranThread::EncryptPrivateData(
     CSuDES sudes;
     assert(buf && buflen);
     return
-        sudes.SetIVBuf(proto_param.ivbuf, sizeof(proto_param.ivbuf)) &&
-        sudes.SetKeyBuf(proto_param.keybuf, sizeof(proto_param.keybuf)) &&
-        sudes.Encrypts(buf, buflen);
+        !sudes.SetIVBuf(proto_param.ivbuf, sizeof(proto_param.ivbuf)) &&
+        !sudes.SetKeyBuf(proto_param.keybuf, sizeof(proto_param.keybuf)) &&
+        !sudes.Encrypts(buf, buflen);
 }
 
 int CDirTranThread::GSNReceiver(
@@ -574,7 +573,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(OnTransPacket, CDirTranThread)
             EnterCriticalSection(&send_bind_mutex);
 
             for (const struct tagSenderBind &sender_bind_l : send_bind) {
-                if (sender_bind.id != send_unit.id)
+                if (sender_bind_l.id != send_unit.id)
                     continue;
 
                 sender_bind.id = sender_bind_l.id;
@@ -639,7 +638,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(OnTransPacket, CDirTranThread)
 
         delete[] send_unit.msg;
         send_unit.msg = nullptr;
-        CloseGSNReceiver(sender_bind.id);
+        CloseGSNSender(sender_bind.id);
 
         if (!running_dir)
             return;
@@ -663,7 +662,7 @@ bool CDirTranThread::PostPacketNoResponse(
         return false;
     }
 
-    buflen_new = ((buflen_new >> 3) + !!(buflen_new & 7)) << 3;
+    buflen_new = ROUND_TO_MULTIPLE(buflen_new, 8);
     send_unit.id = id;
     send_unit.msg = new char[buflen_new];
     send_unit.eventret = nullptr;
@@ -675,6 +674,7 @@ bool CDirTranThread::PostPacketNoResponse(
     if (!send_unit.msg)
         return false;
 
+    memset(send_unit.msg, 0, buflen_new);
     memcpy(send_unit.msg, buf, buflen);
     EncryptPrivateData(proto_param, send_unit.msg, buflen_new);
     EnterCriticalSection(&data_send_mutex);
@@ -746,12 +746,13 @@ bool CDirTranThread::PostPacketSAMHeartbeatNoResponse(
         buflen_new += sizeof(tmpbuf);
     }
 
-    buflen_new = ((buflen_new >> 3) + !!(buflen_new & 7)) << 3;
+    buflen_new = ROUND_TO_MULTIPLE(buflen_new, 8);
     send_unit.totallen = buflen_new;
 
     if (!(send_unit.msg = new char[buflen_new]))
         return false;
 
+    memset(send_unit.msg, 0, buflen_new);
     memcpy(send_unit.msg, buf, buflen);
 
     if (tmpbuf_used)
@@ -787,7 +788,7 @@ bool CDirTranThread::SendPacketNoResponse(
         return false;
     }
 
-    buflen_new = ((buflen_new >> 3) + !!(buflen_new & 7)) << 3;
+    buflen_new = ROUND_TO_MULTIPLE(buflen_new, 8);
     send_unit.id = id;
     send_unit.totallen = buflen_new;
     send_unit.msg = new char[buflen_new];
@@ -804,6 +805,7 @@ bool CDirTranThread::SendPacketNoResponse(
         return false;
     }
 
+    memset(send_unit.msg, 0, buflen_new);
     memcpy(send_unit.msg, buf, buflen_new);
     EncryptPrivateData(proto_param, send_unit.msg, buflen_new);
     EnterCriticalSection(&data_send_mutex);
@@ -979,7 +981,7 @@ bool CDirTranThread::postMessage(
         return false;
     }
 
-    buflen_new = ((buflen_new >> 3) + !!(buflen_new & 7)) << 3;
+    buflen_new = ROUND_TO_MULTIPLE(buflen_new, 8);
     send_unit.id = id;
     send_unit.msg = new char[buflen_new];
     send_unit.eventret = nullptr;
@@ -991,6 +993,7 @@ bool CDirTranThread::postMessage(
     if (!send_unit.msg)
         return false;
 
+    memset(send_unit.msg, 0, buflen_new);
     memcpy(send_unit.msg, buf, buflen);
     EncryptPrivateData(proto_param, send_unit.msg, buflen_new);
     EnterCriticalSection(&data_send_mutex);
@@ -1017,13 +1020,13 @@ bool CDirTranThread::sendMessage(
         return false;
     }
 
-    buflen_new = ((buflen_new >> 3) + !!(buflen_new & 7)) << 3;
+    buflen_new = ROUND_TO_MULTIPLE(buflen_new, 8);
     send_unit.id = id;
     send_unit.totallen = buflen_new;
     send_unit.msg = new char[buflen_new];
     send_unit.eventret = new WAIT_HANDLE;
     send_unit.ret = new unsigned;
-    send_unit.need_reply = false;
+    send_unit.need_reply = true;
     send_unit.session_id = next_session_id++;
 
     if (!send_unit.msg || !send_unit.eventret || !send_unit.ret) {
@@ -1034,6 +1037,7 @@ bool CDirTranThread::sendMessage(
         return false;
     }
 
+    memset(send_unit.msg, 0, buflen_new);
     memcpy(send_unit.msg, buf, buflen);
     EncryptPrivateData(proto_param, send_unit.msg, buflen_new);
     EnterCriticalSection(&data_send_mutex);
@@ -1071,13 +1075,13 @@ bool CDirTranThread::sendMessageWithTimeout(
         return false;
     }
 
-    buflen_new = ((buflen_new >> 3) + !!(buflen_new & 7)) << 3;
+    buflen_new = ROUND_TO_MULTIPLE(buflen_new, 8);
     send_unit.id = id;
     send_unit.totallen = buflen_new;
     send_unit.msg = new char[buflen_new];
     send_unit.eventret = new WAIT_HANDLE;
     send_unit.ret = new unsigned;
-    send_unit.need_reply = false;
+    send_unit.need_reply = true;
     send_unit.session_id = next_session_id++;
 
     if (!send_unit.msg || !send_unit.eventret || !send_unit.ret) {
@@ -1095,6 +1099,7 @@ bool CDirTranThread::sendMessageWithTimeout(
         return false;
     }
 
+    memset(send_unit.msg, 0, buflen_new);
     memcpy(send_unit.msg, buf, buflen);
     EncryptPrivateData(proto_param, send_unit.msg, buflen_new);
     EnterCriticalSection(&data_send_mutex);
