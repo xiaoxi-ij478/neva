@@ -331,7 +331,7 @@ bool CDirectTranSrv::DeInitDirectEnvironment()
 
 bool CDirectTranSrv::DeInit_Sam()
 {
-    struct WAIT_HANDLE struct WAIT_HANDLE;
+    waithandle wait_handle;
     logFile_debug.AppendText("DeInit_Sam called");
 
     if (!dir_thread)
@@ -341,12 +341,12 @@ bool CDirectTranSrv::DeInit_Sam()
     ::PostThreadMessage(
         thread_id,
         ON_DEINIT_SAM_MTYPE,
-        reinterpret_cast<unsigned long>(&struct WAIT_HANDLE),
+        reinterpret_cast<unsigned long>(&wait_handle),
         0
     );
     sam_or_smp_inited = false;
 
-    if (WaitForSingleObject(&struct WAIT_HANDLE, 10000) == ETIMEDOUT) {
+    if (WaitForSingleObject(&wait_handle, 10000) == ETIMEDOUT) {
         OnDeInit_SAM(0, 0);
         logFile_debug.AppendText("强杀直通报文发送线程[正常流程]");
     }
@@ -356,7 +356,7 @@ bool CDirectTranSrv::DeInit_Sam()
 
 bool CDirectTranSrv::DeInit_Smp()
 {
-    struct WAIT_HANDLE struct WAIT_HANDLE;
+    waithandle wait_handle;
     logFile_debug.AppendText("DeInit_Smp called");
 
     if (!dir_thread)
@@ -366,12 +366,12 @@ bool CDirectTranSrv::DeInit_Smp()
     ::PostThreadMessage(
         thread_id,
         ON_DEINIT_SMP_MTYPE,
-        reinterpret_cast<unsigned long>(&struct WAIT_HANDLE),
+        reinterpret_cast<unsigned long>(&wait_handle),
         0
     );
     sam_or_smp_inited = false;
 
-    if (WaitForSingleObject(&struct WAIT_HANDLE, 10000) == ETIMEDOUT) {
+    if (WaitForSingleObject(&wait_handle, 10000) == ETIMEDOUT) {
         OnDeInit_SMP(0, 0);
         logFile_debug.AppendText("强杀直通报文发送线程[正常流程]");
     }
@@ -710,7 +710,7 @@ bool CDirectTranSrv::Init_Sam(
     bool wait
 )
 {
-    struct WAIT_HANDLE struct WAIT_HANDLE;
+    waithandle waithandle;
     assert(dir_srv_para);
     dir_trans_srvpara = *dir_srv_para;
 
@@ -718,10 +718,10 @@ bool CDirectTranSrv::Init_Sam(
         ::PostThreadMessage(
             thread_id,
             ON_INIT_SAM_MTYPE,
-            reinterpret_cast<unsigned long>(&struct WAIT_HANDLE),
+            reinterpret_cast<unsigned long>(&wait_handle9),
             0
         );
-        WaitForSingleObject(&struct WAIT_HANDLE, 0);
+        WaitForSingleObject(&wait_handle, 0);
 
     } else
         ::PostThreadMessage(thread_id, ON_INIT_SAM_MTYPE, 0, 0);
@@ -734,7 +734,7 @@ bool CDirectTranSrv::Init_Smp(
     bool wait
 )
 {
-    struct WAIT_HANDLE struct WAIT_HANDLE;
+    waithandle wait_handle;
     assert(smp_para);
     dir_smp_para = *smp_para;
 
@@ -742,10 +742,10 @@ bool CDirectTranSrv::Init_Smp(
         ::PostThreadMessage(
             thread_id,
             ON_INIT_SMP_MTYPE,
-            reinterpret_cast<unsigned long>(&struct WAIT_HANDLE),
+            reinterpret_cast<unsigned long>(&wait_handle),
             0
         );
-        WaitForSingleObject(&struct WAIT_HANDLE, 0);
+        WaitForSingleObject(&wait_handle, 0);
 
     } else
         ::PostThreadMessage(thread_id, ON_INIT_SAM_MTYPE, 0, 0);
@@ -780,7 +780,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(OnDeInit_SAM, CDirectTranSrv)
     LeaveCriticalSection(&destroy_mutex);
 
     if (arg1)
-        SetEvent(reinterpret_cast<struct WAIT_HANDLE *>(arg1), true);
+        SetEvent(reinterpret_cast<waithandle *>(arg1), true);
 }
 
 DEFINE_DISPATH_MESSAGE_HANDLER(OnDeInit_SMP, CDirectTranSrv)
@@ -809,7 +809,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(OnDeInit_SMP, CDirectTranSrv)
     LeaveCriticalSection(&destroy_mutex);
 
     if (arg1)
-        SetEvent(reinterpret_cast<struct WAIT_HANDLE *>(arg1), true);
+        SetEvent(reinterpret_cast<waithandle *>(arg1), true);
 }
 
 DEFINE_DISPATH_MESSAGE_HANDLER(OnInit_SAM, CDirectTranSrv)
@@ -844,7 +844,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(OnInit_SAM, CDirectTranSrv)
 
     if (!dir_thread) {
         if (arg1)
-            SetEvent(reinterpret_cast<struct WAIT_HANDLE *>(arg1), false);
+            SetEvent(reinterpret_cast<waithandle *>(arg1), false);
 
         return;
     }
@@ -942,7 +942,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(OnInit_SAM, CDirectTranSrv)
     }
 
     if (arg1)
-        SetEvent(reinterpret_cast<struct WAIT_HANDLE *>(arg1), false);
+        SetEvent(reinterpret_cast<waithandle *>(arg1), false);
 }
 
 DEFINE_DISPATH_MESSAGE_HANDLER(OnInit_SMP, CDirectTranSrv)
@@ -969,7 +969,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(OnInit_SMP, CDirectTranSrv)
 
     if (!dir_thread) {
         if (arg1)
-            SetEvent(reinterpret_cast<struct WAIT_HANDLE *>(arg1), false);
+            SetEvent(reinterpret_cast<waithandle *>(arg1), false);
 
         return;
     }
@@ -1064,7 +1064,7 @@ DEFINE_DISPATH_MESSAGE_HANDLER(OnInit_SMP, CDirectTranSrv)
         logFile_debug.AppendText("request init data later.");
 
     if (arg1)
-        SetEvent(reinterpret_cast<struct WAIT_HANDLE *>(arg1), false);
+        SetEvent(reinterpret_cast<waithandle *>(arg1), false);
 }
 
 DEFINE_DISPATH_MESSAGE_HANDLER(OnPostNoResponse_SAM, CDirectTranSrv) const

@@ -372,7 +372,7 @@ bool CDirTranThread::DoSendPacket(
             logFile_debug.AppendText("需要响应报文");
             dir_respara.sender_bind = sender_bind;
             dir_respara.dir_packet_head = packet_head;
-            dir_respara.event_ret = new struct WAIT_HANDLE;
+            dir_respara.event_ret = new waithandle;
             udp_listenthread->SetResSender(dir_respara);
             udp_listenthread->SetIfListenRes(true);
             logFile_debug.AppendText(
@@ -792,7 +792,7 @@ bool CDirTranThread::SendPacketNoResponse(
     send_unit.id = id;
     send_unit.totallen = buflen_new;
     send_unit.msg = new char[buflen_new];
-    send_unit.eventret = new struct WAIT_HANDLE;
+    send_unit.eventret = new waithandle;
     send_unit.ret = new unsigned;
     send_unit.need_reply = false;
     send_unit.session_id = next_session_id++;
@@ -940,7 +940,7 @@ void CDirTranThread::StopRun()
     CloseAllGSNSender();
 }
 
-bool CDirTranThread::WaitUDP_DirectThread_OK(struct WAIT_HANDLE &event_udp_ready) const
+bool CDirTranThread::WaitUDP_DirectThread_OK(waithandle &event_udp_ready) const
 {
     int wait_return = 0;
     assert(udp_listenthread);
@@ -1024,7 +1024,7 @@ bool CDirTranThread::sendMessage(
     send_unit.id = id;
     send_unit.totallen = buflen_new;
     send_unit.msg = new char[buflen_new];
-    send_unit.eventret = new struct WAIT_HANDLE;
+    send_unit.eventret = new waithandle;
     send_unit.ret = new unsigned;
     send_unit.need_reply = true;
     send_unit.session_id = next_session_id++;
@@ -1079,7 +1079,7 @@ bool CDirTranThread::sendMessageWithTimeout(
     send_unit.id = id;
     send_unit.totallen = buflen_new;
     send_unit.msg = new char[buflen_new];
-    send_unit.eventret = new struct WAIT_HANDLE;
+    send_unit.eventret = new waithandle;
     send_unit.ret = new unsigned;
     send_unit.need_reply = true;
     send_unit.session_id = next_session_id++;

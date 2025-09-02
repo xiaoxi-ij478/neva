@@ -98,7 +98,7 @@ class CDirTranThread : public CLnxThread
             int id
         );
         DECLARE_DISPATH_MESSAGE_HANDLER(OnTransPacket);
-        bool WaitUDP_DirectThread_OK(struct WAIT_HANDLE &event_udp_ready) const;
+        bool WaitUDP_DirectThread_OK(waithandle &event_udp_ready) const;
 
         struct tagDirTranPara dir_transpara;
         struct tagDirResPara dir_respara;

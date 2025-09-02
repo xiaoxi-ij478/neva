@@ -301,7 +301,7 @@ struct UdpListenParam {
     key_t mainthread;
     in_addr_t su_ipaddr;
     char ndisname[512];
-    struct WAIT_HANDLE event_udp_ready;
+    waithandle event_udp_ready;
 };
 
 struct UserInfo {

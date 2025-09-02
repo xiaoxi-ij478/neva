@@ -1,17 +1,19 @@
 #ifndef MESSAGE_QUEUE_H_INCLUDED
 #define MESSAGE_QUEUE_H_INCLUDED
 
+#include "mtypes.h"
+
 struct base_message {
-    base_message(unsigned long type) : type(type) {}
+    base_message(enum message_type type) : type(type) {}
     virtual ~base_message() {}
 
-    unsigned long type;
+    enum message_type type;
 };
 
 class message_queue
 {
     public:
-        unsigned long peek_type()
+        enum message_type get_type()
         {
             wait();
             return messages.front()->type;

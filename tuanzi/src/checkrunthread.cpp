@@ -1,5 +1,4 @@
 #include "all.h"
-#include "global.h"
 #include "checkrunthread.h"
 
 #define LOCK_FILE_PATH "/tmp/.rjsupplicant_lock"

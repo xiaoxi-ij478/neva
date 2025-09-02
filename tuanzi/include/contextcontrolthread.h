@@ -214,7 +214,7 @@ class CContextControlThread : public CLnxThread
         std::string upgrade_url;
 
     public:
-        struct WAIT_HANDLE scan_completed;
+        waithandle scan_completed;
 
     private:
         char field_11D0[32];

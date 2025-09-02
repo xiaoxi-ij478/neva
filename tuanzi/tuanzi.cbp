@@ -159,7 +159,9 @@
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
-		<Unit filename="include/all.h" />
+		<Unit filename="include/all.h">
+			<Option compile="1" />
+		</Unit>
 		<Unit filename="include/autorun.h">
 			<Option target="Debug" />
 			<Option target="Release" />

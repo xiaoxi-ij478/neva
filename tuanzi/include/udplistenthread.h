@@ -119,7 +119,7 @@ class CUDPListenThread : public CLnxThread
         in_addr_t sam_ipaddr;
         in_addr_t su_ipaddr;
         char ndisname[512];
-        struct WAIT_HANDLE *event_udp_ready;
+        waithandle *event_udp_ready;
         std::vector<struct tagTimeStampV2> timestamps;
         CRITICAL_SECTION timestamp_mutex;
         struct tagDirResPara dir_para;

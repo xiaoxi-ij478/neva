@@ -42,32 +42,6 @@ extern const char g_pAppData[1820];
 extern const char g_pDllData[2035];
 extern const char cHeartBeatArray[6784];
 
-#ifdef USE_EXTERNAL_LIBRT
-extern int (*my_timer_create)(
-    clockid_t clockid,
-    struct sigevent *sevp,
-    timer_t *timerid
-);
-extern int (*my_timer_gettime)(
-    timer_t timerid,
-    struct itimerspec *curr_value
-);
-extern int (*my_timer_settime)(
-    timer_t timerid,
-    int flags,
-    const struct itimerspec *new_value,
-    struct itimerspec *old_value
-);
-extern int (*my_timer_delete)(timer_t timerid);
-extern int (*my_timer_getoverrun)(timer_t timerid);
-#else
-#define my_timer_gettime    timer_gettime
-#define my_timer_create     timer_create
-#define my_timer_settime    timer_settime
-#define my_timer_delete     timer_delete
-#define my_timer_getoverrun timer_getoverrun
-#endif // USE_EXTERNAL_LIBRT
-
 extern CLogFile logFile;
 extern CLogFile logFile_debug;
 extern CLogFile g_logFile_Ser;

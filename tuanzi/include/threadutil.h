@@ -1,20 +1,14 @@
 #ifndef THREADUTIL_H_INCLUDED
 #define THREADUTIL_H_INCLUDED
 
-struct WAIT_HANDLE;
+class waithandle;
 
 extern int WaitForSingleObject(
-    struct WAIT_HANDLE *event,
+    waithandle &wait_handle,
     unsigned long off_msec
 );
-extern int WaitForMultipleObjects(
-    int event_count,
-    struct WAIT_HANDLE *events,
-    bool wait_all,
-    unsigned long no_obj_waittime
-);
-extern void CloseHandle(struct WAIT_HANDLE *wait_handle);
-extern void SetEvent(struct WAIT_HANDLE *wait_handle, bool broadcast);
+extern void CloseHandle(waithandle *wait_handle);
+extern void SetEvent(waithandle *wait_handle, bool broadcast);
 extern bool TerminateThread(pthread_t thread_id);
 extern bool PostThreadMessage(
     key_t thread_key,

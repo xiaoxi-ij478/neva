@@ -15,6 +15,7 @@
 #include <mutex>
 #include <numeric>
 #include <queue>
+#include <set>
 #include <sstream>
 #include <string>
 #include <thread>

@@ -1101,26 +1101,6 @@ const char cHeartBeatArray[6784] = {
     0x9F, 0xD3, 0x8F, 0x43
 };
 
-#ifdef USE_EXTERNAL_LIBRT
-int (*my_timer_create)(
-    clockid_t clockid,
-    struct sigevent *sevp,
-    timer_t *timerid
-) = nullptr;
-int (*my_timer_gettime)(
-    timer_t timerid,
-    struct itimerspec *curr_value
-) = nullptr;
-int (*my_timer_settime)(
-    timer_t timerid,
-    int flags,
-    const struct itimerspec *new_value,
-    struct itimerspec *old_value
-) = nullptr;
-int (*my_timer_delete)(timer_t timerid) = nullptr;
-int (*my_timer_getoverrun)(timer_t timerid) = nullptr;
-#endif // USE_EXTERNAL_LIBRT
-
 CLogFile logFile;
 CLogFile logFile_debug;
 CLogFile g_logFile_Ser;

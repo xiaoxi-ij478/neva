@@ -1,6 +1,11 @@
 #ifndef MTYPES_H_INCLUDED
 #define MTYPES_H_INCLUDED
 
+enum class message_type {
+    stop_thread = 0x456,
+    start_thread = 0x457
+};
+
 #define START_DETECT_MTYPE 0x1
 #define STOP_DETECT_MTYPE 0x2
 
@@ -33,8 +38,6 @@
 #define SET_HELLOTIMER_PLEASE_MTYPE 0x82
 #define CHANGE_HELLOPARA_MTYPE 0x7B
 
-#define STOP_THREAD_MTYPE 0x456
-#define START_THREAD_MTYPE 0x457
 #define ON_TIMER_MTYPE 0x1E61
 
 #define SEND_MESSAGE_MTYPE 0x7D2
