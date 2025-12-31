@@ -869,7 +869,7 @@ static int wpa_supplicant_need_to_roam(struct wpa_supplicant *wpa_s,
 	return 1;
 }
 
-// ADDED BY xiaoxi-ij478 for tuanzi
+// ADDED BY xiaoxi-ij478 for neva
 struct su_wpa_ie {
     int wpa_ie_set;
     int proto;
@@ -912,7 +912,7 @@ struct SupfMsgData {
     const void *buf;
     unsigned len;
 };
-// ADDED BY xiaoxi-ij478 for tuanzi END
+// ADDED BY xiaoxi-ij478 for neva END
 
 static void wpa_supplicant_event_scan_results(struct wpa_supplicant *wpa_s,
 					      union wpa_event_data *data)
@@ -932,7 +932,7 @@ static void wpa_supplicant_event_scan_results(struct wpa_supplicant *wpa_s,
 	scan_res = wpa_supplicant_get_scan_results(wpa_s,
 						   data ? &data->scan_info :
 						   NULL, 1);
-	// ADDED BY xiaoxi-ij478 for tuanzi
+	// ADDED BY xiaoxi-ij478 for neva
 	struct ScanCmdCtx *pipe_scanres = NULL;
 	const u8 *ssid_ie=NULL;
 	unsigned ssid_len=0;
@@ -1000,7 +1000,7 @@ static void wpa_supplicant_event_scan_results(struct wpa_supplicant *wpa_s,
 	}
 	free(pipe_scanres);
 	pipe_scanres=NULL;
-	// ADDED BY xiaoxi-ij478 for tuanzi END
+	// ADDED BY xiaoxi-ij478 for neva END
 	if (scan_res == NULL) {
 		if (wpa_s->conf->ap_scan == 2 || ap)
 			return;

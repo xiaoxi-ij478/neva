@@ -1,4 +1,4 @@
-# 团子 (TuanZi) 锐捷验证客户端
+# 团子 (Neva) 锐捷验证客户端
 
 这是一个试图复刻原版锐捷验证客户端的代码。
 
@@ -24,7 +24,7 @@
 
 这个程序仅支持 Linux，Windows ~~等平台我可能会开一个新仓库来重写~~ 但其实我不会写 Windows。
 
-首先安装 [Codeblocks](https://www.codeblocks.org/downloads/binaries/)，然后打开 tuanzi.workspace，根据你的需要选择 Debug / Release 编译目标，然后就可以运行了。
+首先安装 [Codeblocks](https://www.codeblocks.org/downloads/binaries/)，然后打开 neva.workspace，根据你的需要选择 Debug / Release 编译目标，然后就可以运行了。
 
 纯 Makefile 现在还没有想法。
 

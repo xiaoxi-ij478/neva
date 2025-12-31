@@ -944,7 +944,7 @@ int wpa_config_write(const char *name, struct wpa_config *config)
 #endif /* CONFIG_NO_CONFIG_WRITE */
 }
 
-// ADDED BY xiaoxi-ij478 for tuanzi
+// ADDED BY xiaoxi-ij478 for neva
 struct wpa_config *wpa_config_read_pipe(int file_pipe)
 {
 	FILE *f;
@@ -1016,5 +1016,5 @@ struct wpa_config *wpa_config_read_pipe(int file_pipe)
 
 	return config;
 }
-// ADDED BY xiaoxi-ij478 for tuanzi END
+// ADDED BY xiaoxi-ij478 for neva END
 

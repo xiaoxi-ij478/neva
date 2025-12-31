@@ -83,8 +83,13 @@
 #include <gnu/libc-version.h>
 #endif // __GLIBC__
 
-#include <d3des/d3des.h>
 #include <tinyxml/tinyxml.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
+#include <d3des/d3des.h>
 #include <iniparser/iniparser.h>
 #include <crc16/crc16.h>
 #include <rhash/sha1.h>
@@ -94,5 +99,9 @@
 #include <ampheck/ripemd128.h>
 #include <rc4/rc4.h>
 #include <pcap.h>
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif // ALL_H_INCLUDED

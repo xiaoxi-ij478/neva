@@ -138,7 +138,8 @@ struct EAPOLFrame *CStateMachineThread::EncapsulateFrame(
         case EAP_TYPE_OTP:
         case EAP_TYPE_GTC:
         case EAP_TYPE_EXPANDED:
-            return eapol_frame;
+        default:
+            break;
 
         case EAP_TYPE_MD5:
             if (!buflen)
@@ -165,9 +166,6 @@ struct EAPOLFrame *CStateMachineThread::EncapsulateFrame(
                     buflen
                 );
 
-            break;
-
-        default:
             break;
     }
 

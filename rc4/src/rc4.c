@@ -9,7 +9,7 @@ static void swap(unsigned char *s1, unsigned char *s2)
     *s2 = temp;
 }
 
-void re_S(unsigned char *S)
+static void re_S(unsigned char *S)
 {
     int i;
 
@@ -17,7 +17,7 @@ void re_S(unsigned char *S)
         S[i] = i;
 }
 
-void re_T(unsigned char *T, const unsigned char *key)
+static void re_T(unsigned char *T, const unsigned char *key)
 {
     int i;
     int keylen;
@@ -27,7 +27,7 @@ void re_T(unsigned char *T, const unsigned char *key)
         T[i] = key[i % keylen];
 }
 
-void re_Sbox(unsigned char *S, unsigned char *T)
+static void re_Sbox(unsigned char *S, unsigned char *T)
 {
     int i;
     int j = 0;
@@ -56,8 +56,5 @@ void RC4(unsigned char *text, const unsigned char *key, int txtlen)
         swap(&S[i], &S[l]);
         text[k] = text[k] ^ S[(S[i] + S[l]) & 255];
         k++;
-//        text[k] = text[k] ^ S[i];
-//        i = (i + 1) % 256;
-//        k++;
     }
 }

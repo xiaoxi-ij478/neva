@@ -574,7 +574,7 @@ static void wpa_supplicant_port_cb(void *ctx, int authorized)
 }
 #endif /* IEEE8021X_EAPOL */
 
-// ADDED BY xiaoxi-ij478 for tuanzi
+// ADDED BY xiaoxi-ij478 for neva
 enum SupfMsg {
 	SUPF_MSG_SCAN_RES,
 	SUPF_MSG_EAP_ERR,
@@ -617,7 +617,7 @@ static void wpa_supplicant_notify_eap_msg(
 		wpa_s->event_callback(SUPF_MSG, &msg_data);
 	}
 }
-// ADDED BY xiaoxi-ij478 for tuanzi END
+// ADDED BY xiaoxi-ij478 for neva END
 
 const u8 *wpa_supplicant_get_upload_private_data(void *ctx, int *len)
 {

@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="tuanzi" />
+		<Option title="neva" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/tuanzi" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/neva" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -17,7 +17,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/tuanzi" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/neva" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -58,7 +58,7 @@
 				</Linker>
 			</Target>
 			<Target title="Updater Debug">
-				<Option output="bin/Debug/tuanzi_updater" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/neva_updater" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -72,7 +72,7 @@
 				</Linker>
 			</Target>
 			<Target title="Updater Release">
-				<Option output="bin/Release/tuanzi_updater" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/neva_updater" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -152,7 +152,6 @@
 			<Add directory="../ampheck/bin/$(target_name)" />
 			<Add directory="../rc4/bin/$(target_name)" />
 			<Add directory="../md5/bin/$(target_name)" />
-			<Add directory="../openssl/out/lib" />
 			<Add directory="../pcap/out/lib" />
 		</Linker>
 		<Unit filename="include/adapterdetectthread.h">
@@ -454,6 +453,8 @@
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/adapterdetectthread.cpp">
+			<Option compile="0" />
+			<Option link="0" />
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
@@ -572,10 +573,14 @@
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/isproser.cpp">
+			<Option compile="0" />
+			<Option link="0" />
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/libutil.cpp">
+			<Option compile="0" />
+			<Option link="0" />
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
@@ -614,14 +619,20 @@
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/proxyclienttcp.cpp">
+			<Option compile="0" />
+			<Option link="0" />
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/proxydetectthread.cpp">
+			<Option compile="0" />
+			<Option link="0" />
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/proxysertcp.cpp">
+			<Option compile="0" />
+			<Option link="0" />
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
@@ -684,6 +695,8 @@
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/tcp.cpp">
+			<Option compile="0" />
+			<Option link="0" />
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>

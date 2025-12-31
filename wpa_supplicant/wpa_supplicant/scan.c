@@ -688,7 +688,7 @@ void wpa_scan_results_free(struct wpa_scan_results *res)
 	os_free(res);
 }
 
-// ADDED BY xiaoxi-ij478 for tuanzi
+// ADDED BY xiaoxi-ij478 for neva
 void wpa_printf_scan_info(struct wpa_scan_results *scan_res)
 {
 	const u8 *ssid;
@@ -729,4 +729,4 @@ void wpa_printf_scan_info(struct wpa_scan_results *scan_res)
 		);
 	}
 }
-// ADDED BY xiaoxi-ij478 for tuanzi END
+// ADDED BY xiaoxi-ij478 for neva END

@@ -57,9 +57,9 @@ struct wpa_interface {
 	 */
 	const char *confname;
 
-	// ADDED BY xiaoxi-ij478 for tuanzi
+	// ADDED BY xiaoxi-ij478 for neva
 	int conf_pipe_read;
-	// ADDED BY xiaoxi-ij478 for tuanzi END
+	// ADDED BY xiaoxi-ij478 for neva END
 
 	/**
 	 * ctrl_interface - Control interface parameter
@@ -297,14 +297,14 @@ struct wpa_client_mlme {
 #endif /* CONFIG_CLIENT_MLME */
 };
 
-// ADDED BY xiaoxi-ij478 for tuanzi
+// ADDED BY xiaoxi-ij478 for neva
 enum SUPF_EVENT_TYPE {
     SUPF_STATE,
     SUPF_MSG
 };
 
 typedef void (*supf_event_callback)(enum SUPF_EVENT_TYPE, const void *);
-// ADDED BY xiaoxi-ij478 for tuanzi END
+// ADDED BY xiaoxi-ij478 for neva END
 
 /**
  * struct wpa_supplicant - Internal data for wpa_supplicant interface
@@ -330,9 +330,9 @@ struct wpa_supplicant {
 	char bridge_ifname[16];
 
 	char *confname;
-	// ADDED BY xiaoxi-ij478 for tuanzi
+	// ADDED BY xiaoxi-ij478 for neva
 	int conf_pipe_read;
-	// ADDED BY xiaoxi-ij478 for tuanzi END
+	// ADDED BY xiaoxi-ij478 for neva END
 	struct wpa_config *conf;
 	int countermeasures;
 	os_time_t last_michael_mic_error;
@@ -453,11 +453,11 @@ struct wpa_supplicant {
 
 	int after_wps;
 	unsigned int wps_freq;
-	// ADDED BY xiaoxi-ij478 for tuanzi
+	// ADDED BY xiaoxi-ij478 for neva
 	u8 *private_upload_data;
 	int private_upload_data_len;
 	supf_event_callback event_callback;
-	// ADDED BY xiaoxi-ij478 for tuanzi END
+	// ADDED BY xiaoxi-ij478 for neva END
 };
 
 

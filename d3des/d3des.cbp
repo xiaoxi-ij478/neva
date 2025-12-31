@@ -15,7 +15,7 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-ggdb3" />
-					<Add directory="include" />
+					<Add directory="include/d3des" />
 				</Compiler>
 			</Target>
 			<Target title="Release">

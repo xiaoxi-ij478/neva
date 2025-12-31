@@ -10,10 +10,6 @@
  *	(GEnie : OUTER; CIS : [71755,204])
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif // __cplusplus
-
 #define D2_DES		/* include double-length support */
 #define D3_DES		/* include triple-length support */
 
@@ -158,8 +154,4 @@ extern void make3key(char *, unsigned char *);
 
 /* d3des.h V5.09 rwo 9208.04 15:06 Graven Imagery
  ********************************************************************/
-
-#ifdef __cplusplus
-}
-#endif // __cplusplus
 

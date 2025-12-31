@@ -20,18 +20,18 @@
 #include "common.h"
 #include "wpa_supplicant_i.h"
 #include "driver_i.h"
-// ADDED BY xiaoxi-ij478 for tuanzi
+// ADDED BY xiaoxi-ij478 for neva
 #include "scan.h"
 #include "utils/eloop.h"
-// ADDED BY xiaoxi-ij478 for tuanzi END
+// ADDED BY xiaoxi-ij478 for neva END
 
 extern struct wpa_driver_ops *wpa_drivers[];
 
-// ADDED BY xiaoxi-ij478 for tuanzi
+// ADDED BY xiaoxi-ij478 for neva
 int g_supf_cmd_read_pipe = -1;
 int g_supf_cb_write_pipe = -1;
 int g_conf_pipe_read = -1;
-// ADDED BY xiaoxi-ij478 for tuanzi END
+// ADDED BY xiaoxi-ij478 for neva END
 
 static void usage(void)
 {
@@ -129,7 +129,7 @@ static void wpa_supplicant_fd_workaround(void)
 #endif /* __linux__ */
 }
 
-// ADDED BY xiaoxi-ij478 for tuanzi
+// ADDED BY xiaoxi-ij478 for neva
 enum SupfState {
 	SUPF_STOP,
 	SUPF_START,
@@ -345,7 +345,7 @@ static void supf_event_cb(
 	}
 	free(write_data);
 }
-// ADDED BY xiaoxi-ij478 for tuanzi END
+// ADDED BY xiaoxi-ij478 for neva END
 
 int main(int argc, char *argv[])
 {
@@ -368,7 +368,7 @@ int main(int argc, char *argv[])
 
 	wpa_supplicant_fd_workaround();
 
-	// ADDED BY xiaoxi-ij478 for tuanzi
+	// ADDED BY xiaoxi-ij478 for neva
 	// as a special case, if the supplicant was started with argv[0][0] == '-'
 	// then the first two arguments are:
 	// - command read pipe fd
@@ -381,10 +381,10 @@ int main(int argc, char *argv[])
 		argv += 2;
 		argc -= 2;
 	}
-	// ADDED BY xiaoxi-ij478 for tuanzi END
+	// ADDED BY xiaoxi-ij478 for neva END
 
 	for (;;) {
-		// ADDED BY xiaoxi-ij478 for tuanzi
+		// ADDED BY xiaoxi-ij478 for neva
 		c = getopt(argc, argv, "a:b:Bc:C:D:df:g:hi:KLNo:O:p:P:qstuvW");
 		if (c < 0)
 			break;
@@ -392,7 +392,7 @@ int main(int argc, char *argv[])
 		case 'a':
 			g_conf_pipe_read = strtol(optarg, NULL, 10);
 			break;
-		// ADDED BY xiaoxi-ij478 for tuanzi END
+		// ADDED BY xiaoxi-ij478 for neva END
 		case 'b':
 			iface->bridge_ifname = optarg;
 			break;
@@ -501,7 +501,7 @@ int main(int argc, char *argv[])
 		goto out;
 	}
 
-	// ADDED BY xiaoxi-ij478 for tuanzi
+	// ADDED BY xiaoxi-ij478 for neva
 	wpa_printf(
 		MSG_INFO,
 		"++++++++++++++++++++++++++++++"
@@ -548,17 +548,17 @@ int main(int argc, char *argv[])
 	eloop_unregister_read_sock(g_supf_cmd_read_pipe);
 	wpa_printf(MSG_DEBUG, "wpa_supplicant_deinit.");
 	wpa_supplicant_deinit(global);
-	// ADDED BY xiaoxi-ij478 for tuanzi END
+	// ADDED BY xiaoxi-ij478 for neva END
 
 out:
 	os_free(ifaces);
 	os_free(params.pid_file);
 
 	os_program_deinit();
-	// ADDED BY xiaoxi-ij478 for tuanzi
+	// ADDED BY xiaoxi-ij478 for neva
 	close(g_supf_cmd_read_pipe);
 	close(g_supf_cb_write_pipe);
-	// ADDED BY xiaoxi-ij478 for tuanzi END
+	// ADDED BY xiaoxi-ij478 for neva END
 
 	return exitcode;
 }

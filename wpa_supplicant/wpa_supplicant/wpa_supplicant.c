@@ -508,7 +508,7 @@ const char * wpa_supplicant_state_txt(enum wpa_states state)
 	}
 }
 
-// ADDED BY xiaoxi-ij478 for tuanzi
+// ADDED BY xiaoxi-ij478 for neva
 enum SupfState {
     SUPF_STOP,
     SUPF_START,
@@ -579,7 +579,7 @@ static void wpa_supplicant_state_callback(
       return;
   }
 }
-// ADDED BY xiaoxi-ij478 for tuanzi END
+// ADDED BY xiaoxi-ij478 for neva END
 
 /**
  * wpa_supplicant_set_state - Set current connection state
@@ -691,7 +691,7 @@ int wpa_supplicant_reload_configuration(struct wpa_supplicant *wpa_s)
 	int reconf_ctrl;
 	int old_ap_scan;
 
-	// ADDED BY xiaoxi-ij478 for tuanzi
+	// ADDED BY xiaoxi-ij478 for neva
 //	if (wpa_s->confname == NULL)
 	if (wpa_s->confname) {
 		wpa_printf(
@@ -705,7 +705,7 @@ int wpa_supplicant_reload_configuration(struct wpa_supplicant *wpa_s)
 			return -1;
 		}
 	} else {
-	// ADDED BY xiaoxi-ij478 for tuanzi END
+	// ADDED BY xiaoxi-ij478 for neva END
 		conf = wpa_config_read(wpa_s->confname);
 		if (conf == NULL) {
 			wpa_msg(wpa_s, MSG_ERROR, "Failed to parse the configuration "
